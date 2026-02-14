@@ -1,0 +1,34 @@
+@model HQBackSite.Models.PagedListModel<HQBackSite.Models.ParaModel>
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>部門編號</th>
+                        <th>部門代號</th>
+                        <th>部門名稱</th>
+                        <th>風格</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="width:20%">@item.code</td>
+                            <td style="width:20%">@item.code_name</td>
+                            <td style="width:20%">@item.data1</td>
+                            <td style="width:20%">@item.data6text</td>
+                            <td style="width:20%">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="libs.modal.openModalS('編輯', '/Menu/IndexUpdate?code_name=@item.code_name')">編輯</button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="removeItem('@item.code_name')">刪除</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@{ Html.RenderPartial("_Pager", new HQBackSite.Models.PagerModel("IndexQuery", Model, ViewBag.QueryModel)); }

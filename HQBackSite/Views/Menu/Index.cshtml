@@ -1,0 +1,62 @@
+﻿@model HQBackSite.Models.ParaModel
+@{
+    ViewBag.Title = "選單設定";
+    ViewBag.CurrentModule = "menuSetting";
+}
+@section Scripts {
+    <script>
+        async function removeItem(code_name) {
+            if (!confirm('確定要刪除嗎？')) {
+                return;
+            }
+
+            const result = await libs.api.post('/Menu/IndexRemove', {
+                data: { code_name },
+            });
+
+            result.code === 1 ? query() : alert(result.message);
+        }
+
+        function query() {
+            $("#queryForm").submit();
+        }
+
+        function lnkQuery() {
+            document.getElementById('PageNo').value = 1;
+            query();
+        }
+
+        lnkQuery();
+    </script>
+}
+<div>
+    @using (Ajax.BeginForm("IndexQuery", null, new AjaxOptions { UpdateTargetId = "queryResult" }, new { id = "queryForm" }))
+    {
+        @Html.HiddenFor(m => m.PageNo)
+        <div class="search-section">
+            <div class="search-row">
+                <div class="search-field">
+                    <label class="search-label">部門代碼</label>
+                    <div class="search-input-wrapper">
+                        @Html.TextBoxFor(m => m.data2, new { @class = "form-control", id = "data2", placeholder = "請輸入部門代碼", onblur = "this.value = this.value.trim();" })
+                    </div>
+                </div>
+                <div class="search-field">
+                    <label class="search-label">部門名稱</label>
+                    <div class="search-input-wrapper">
+                        @Html.TextBoxFor(m => m.data1, new { @class = "form-control", id = "data1", placeholder = "請輸入部門名稱", onblur = "this.value = this.value.trim();" })
+                    </div>
+                </div>
+            </div>
+            <div class="search-actions">
+                <div class="search-actions-left"></div>
+                <div class="search-actions-right">
+                    <a href="#" class="btn btn-outline-secondary" onclick="libs.reload(); return false;">清除</a>
+                    <a href="#" class="btn btn-primary" onclick="lnkQuery()">查詢</a>
+                    <button type="button" class="btn btn-primary" onclick="libs.modal.openModalS('新增', '/Menu/IndexAdd');">新增選單</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div id="queryResult"></div>

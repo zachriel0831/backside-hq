@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - HQ管理系統</title>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div class="d-flex flex-column app-container">
+        <nav class="navbar navbar-light app-header">
+            <div class="container-fluid app-header-container">
+                <div class="d-flex align-items-center gap-2 gap-md-3">
+                    <button class="btn btn-sm back-btn d-md-none btn-white-text" id="toggleSidebarBtn">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <a class="navbar-brand mb-0 h5 d-none d-sm-inline" href="/">
+                        <img data-v-473611e9="" src="https://skmep.skm.com.tw/assets/brand_logo-f16cace8.png" width="110" height="38" alt="brand logo">
+                        <span class="navbar-brand-text">HQ管理系統</span>
+                    </a>
+                    <span class="navbar-brand mb-0 h6 d-sm-none navbar-brand-text-white">HQ系統</span>
+                </div>
+                <div class="ms-auto">
+                    @Html.Action("GetUserInfo", "Menu")
+                    <button class="btn btn-outline-danger btn-sm logout-btn" id="logoutBtn" onclick="location.href = '@Url.Action("Logout", "Account")'">
+                        登出
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div class="d-flex flex-fill position-relative app-content-wrapper">
+            <div class="sidebar-overlay" id="sidebarOverlay"></div>
+            <aside class="sidebar" id="sidebar">
+                @Html.Action("GetMenu", "Menu", new { currentModule = ViewBag.CurrentModule })
+            </aside>
+            <main class="flex-fill p-2 main-content">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-ajax-unobtrusive@3.2.6/dist/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/lib.js"></script>
+    <script src="~/Scripts/menu.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

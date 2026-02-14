@@ -1,0 +1,48 @@
+﻿@model HQBackSite.Models.PagedListModel<HQBackSite.Models.NewsModel>
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>公告編號</th>
+                        <th>公告類別</th>
+                        <th>公告名稱</th>
+                        <th>起訖日</th>
+                        <th>上下線狀態</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="width:10%">@item.des_no</td>
+                            <td style="width:10%">@item.dept</td>
+                            <td style="width:20%">@item.background</td>
+                            <td style="width:15%">
+                                @(item.start_date.HasValue ? item.start_date.Value.ToString("yyyy-MM-dd") : "")
+                                ~
+                                @(item.end_date.HasValue ? item.end_date.Value.ToString("yyyy-MM-dd") : "")
+                            </td>
+                            <td style="width:10%">
+                                @if (item.status == "上線")
+                                {
+                                    <span>上線</span>
+                                }
+                                else
+                                {
+                                    <span style="color: red;">下線</span>
+                                }
+                            </td>
+                            <td style="width:10%">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="libs.modal.openModalL('編輯', '/Menu/ICSUpdate?des_no=@item.des_no')">編輯</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@{ Html.RenderPartial("_Pager", new HQBackSite.Models.PagerModel("ICSQuery", Model, ViewBag.QueryModel)); }

@@ -1,0 +1,58 @@
+﻿@model HQBackSite.Models.ContentModel
+@{
+    Layout = null;
+    var paras = (ViewData["Paras"] as List<HQBackSite.Models.ParaModel>) ?? new List<HQBackSite.Models.ParaModel>();
+}
+<div class="modal-body">
+    @using (Html.BeginForm("CategoryAdd", "Menu", FormMethod.Post, new { id = "addForm" }))
+    {
+        <div class="mb-3">
+            <label class="form-label" for="dept">部門</label>
+            <select class="form-select" id="dept" name="dept">
+                <option value="">請選擇選單部門</option>
+                @foreach (var u in paras)
+                {
+                    <option value="@u.code_name">
+                        @u.data1 ( @u.code_name )
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="subject">類別名稱</label>
+            @Html.TextBoxFor(m => m.subject, new { @class = "form-control", id = "subject", maxlength = "50", placeholder = "" })
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="is_show">顯示</label>
+            <select class="form-select" id="is_show" name="is_show">
+                <option value="">請選擇</option>
+                <option value="Y">Y</option>
+                <option value="N">N</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="url">連結</label>
+            @Html.TextBoxFor(m => m.url, new { @class = "form-control", id = "url", maxlength = "50", placeholder = "" })
+        </div>
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+    <button type="button" class="btn btn-primary" onclick="submitAddForm()">確定</button>
+</div>
+<script>
+    async function submitAddForm() {
+        var form = document.getElementById('addForm');
+        if (form) {
+            var result = await libs.api.post('/Menu/CategoryAdd', {
+                data: Object.fromEntries(new FormData(form)),
+                loadding: true
+            });
+
+            libs.result(result, () => {
+                query();
+                libs.modal.closeModal();
+            });
+        }
+    }
+</script>

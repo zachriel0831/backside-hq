@@ -1,0 +1,35 @@
+﻿@model HQBackSite.Models.PagedListModel<HQBackSite.Models.ContentModel>
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>部門</th>
+                        <th>類別</th>
+                        <th>顯示位置</th>
+                        <th>標題</th>
+                        <th>顯示</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="width:15%">@item.data1 ( @item.dept )</td>
+                            <td style="width:15%">@item.csubject</td>
+                            <td style="width:10%">@item.subtypetext</td>
+                            <td style="width:30%">@item.subject</td>
+                            <td style="width:10%">@item.is_show</td>
+                            <td style="width:10%">
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="libs.modal.openModalL('編輯', '/Menu/ContentUpdate?subject_id=@item.subject_id')">編輯</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@{ Html.RenderPartial("_Pager", new HQBackSite.Models.PagerModel("ContentQuery", Model, ViewBag.QueryModel)); }

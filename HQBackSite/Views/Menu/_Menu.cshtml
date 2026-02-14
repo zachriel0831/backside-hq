@@ -1,0 +1,25 @@
+@model HQBackSite.Models.MenuViewModel
+
+<ul class="nav flex-column" id="menuList">
+    @foreach (var group in Model.MenuGroups)
+    {
+        <li class="nav-item">
+            <div class="nav-group-header" data-group-id="@group.Id">
+                <span>@group.Name</span>
+                <i class="fas fa-chevron-up"></i>
+            </div>
+            <ul class="nav-submenu">
+                @foreach (var item in group.Items)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(!string.IsNullOrEmpty(Model.CurrentModule) && item.ModuleId == Model.CurrentModule ? "active" : "")" 
+                           data-module-id="@item.ModuleId"
+                           href="@Url.Action(item.Action, item.Controller)">
+                            <span>@item.Text</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </li>
+    }
+</ul>

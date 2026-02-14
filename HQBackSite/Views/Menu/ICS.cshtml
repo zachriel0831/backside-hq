@@ -1,0 +1,65 @@
+﻿@model HQBackSite.Models.NewsModel
+@{
+    ViewBag.Title = "國際認證規範公告";
+    ViewBag.CurrentModule = "certification";
+}
+@section Scripts {
+    <script>
+        function query() {
+            $("#queryForm").submit();
+        }
+
+        function lnkQuery() {
+            document.getElementById('PageNo').value = 1;
+            query();
+        }
+
+        lnkQuery();
+    </script>
+}
+<div>
+    @using (Ajax.BeginForm("ICSQuery", null, new AjaxOptions { UpdateTargetId = "queryResult" }, new { id = "queryForm" }))
+    {
+        @Html.HiddenFor(m => m.PageNo)
+        <div class="search-section">
+            <div class="search-row">
+                <div class="search-field">
+                    <label class="search-label">公告類別</label>
+                    <div class="search-input-wrapper">
+                        <select class="form-select" id="dept" name="dept">
+                            <option value="">全部</option>
+                            <option value="上傳文件">上傳文件</option>
+                            <option value="資安文件">資安文件</option>
+                            <option value="ISO文件">ISO文件</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="search-field">
+                    <label class="search-label">公告名稱</label>
+                    <div class="search-input-wrapper">
+                        @Html.TextBoxFor(m => m.background, new { @class = "form-control", id = "data1", placeholder = "請輸入標題", onblur = "this.value = this.value.trim();" })
+                    </div>
+                </div>
+                <div class="search-field">
+                    <label class="search-label">上下線狀態</label>
+                    <div class="search-input-wrapper">
+                        <select class="form-select" id="status" name="status">
+                            <option value="">全部</option>
+                            <option value="上線">上線</option>
+                            <option value="下線">下線</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="search-actions">
+                <div class="search-actions-left"></div>
+                <div class="search-actions-right">
+                    <a href="#" class="btn btn-outline-secondary" onclick="libs.reload(); return false;">清除</a>
+                    <a href="#" class="btn btn-primary" onclick="lnkQuery()">查詢</a>
+                    <button type="button" class="btn btn-primary" onclick="libs.modal.openModalL('新增', '/Menu/ICSAdd');">新增公告</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div id="queryResult"></div>

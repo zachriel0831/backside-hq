@@ -1,0 +1,225 @@
+﻿/*全站共用樣式表*/
+
+/* basic */
+body {
+    margin: 0;
+    padding: 0;
+    font: "新細明體";
+    color: #999999;
+}
+
+a:link {
+    color: #505050;
+    text-decoration: none;
+}
+
+a:visited {
+    color: #505050;
+    text-decoration: none;
+}
+
+a:active {
+    color: #990000;
+    text-decoration: underline;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: #FF0000;
+}
+
+/*table*/
+.ta01 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    color: #999999;
+}
+
+/* font */
+.fnt01 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    font-style: normal;
+    line-height: 16pt;
+    color: #333666;
+    
+}
+
+.fnt02 {
+    font-family: "新細明體";
+    font-size: 11pt;
+    color: #414141;
+    font-weight: bold;
+}
+
+.fnt03 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    color: #000000;
+}
+
+.fnt04 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    color: #006600;
+}
+
+.fnt05 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    color: #993300;
+}
+
+.fnt06 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    color: #996600;
+}
+
+.fnt07 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    color: #CC0000;
+}
+
+.fnt08 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    color: #330099;
+}
+
+.fnt09 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    color: #333666;
+}
+
+.fnt10 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    line-height: 1.5;
+    color: #336600;
+}
+
+.fnt11 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    line-height: 1.5;
+    color: #CC6600;
+    font-weight: bold;
+}
+
+.fnt12 {
+    font-family: "新細明體";
+    font-size: 12pt;
+    color: #0066CC;
+    font-weight: bold;
+}
+
+.fnt13 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    color: #0066CC;
+    font-weight: bold;
+}
+
+.fnt14 {
+    font-family: "新細明體";
+    font-size: 12pt;
+    color: #9966CC;
+    font-weight: bold;
+}
+
+.fnt15 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    color: #9966CC;
+    font-weight: bold;
+}
+
+.fnt16 {
+    font-family: "新細明體";
+    font-size: 12pt;
+    color: #FF66CC;
+    font-weight: bold;
+}
+
+.fnt17 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    color: #FF66CC;
+    font-weight: bold;
+}
+
+.fnt18 {
+    font-family: "新細明體";
+    font-size: 14pt;
+    color: #336666;
+    font-weight: bold;
+}
+
+.fnt19 {
+    font-family: "新細明體";
+    font-size: 12pt;
+    color: #3366CC;
+    font-weight: bold;
+}
+
+.fnt20 {
+    font-family: "新細明體";
+    font-size: 10pt;
+    color: #333666;
+    font-weight: bold;
+}
+
+.fnt21 {
+    font-family: "新細明體";
+    font-size: 8pt;
+    color: #999999;
+}
+
+.fnt22 {
+    font-size: 24pt;
+    font-weight: bold;
+    color: #00FFFF;
+}
+
+.fnt23 {
+    font-size: 9pt;
+    color: #000000;
+}
+
+.fnt24 {
+    font-size: 14pt;
+    color: #FFFF33;
+    font-weight: bold;
+}
+
+.fnt25 {
+    font-family: "新細明體";
+    font-size: 8pt;
+    color: #CCCCCC;
+}
+
+.hap {
+    font-family: "新細明體";
+    font-size: 9pt;
+    font-style: normal;
+    color: #333666;
+}
+
+.down {
+    font-family: "新細明體";
+    font-size: 8pt;
+    font-style: normal;
+    color: #999999;
+    margin: 28px 0px;
+}
+
+.MsgHide {
+    height: 100px;
+    border: 1px solid #aaa;
+    padding: 0px;
+    font: normal 12px "細明體";
+    display: none;
+}

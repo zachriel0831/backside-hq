@@ -1,0 +1,208 @@
+﻿@model List<HQBackSite.Models.ParaModel>
+@{
+    ViewBag.Title = "選單權限設定";
+    ViewBag.CurrentModule = "menuPermission";
+}
+
+@section Scripts {
+    <script>
+        let selectedUser = null;
+        let selectedCodeName = null;
+
+        async function permissionQueryUser() {
+            var emid = document.getElementById('userNumberInput');
+            if (!emid || !emid.value.trim()) {
+                alert('請輸入員工編號');
+                return;
+            }
+
+            var result = await libs.api.get('/Menu/PermissionQueryUser?emid=' + encodeURIComponent(emid.value.trim()), { loadding: false });
+            
+            if (result.code === 0) {
+                document.getElementById("userView").innerHTML = '<div class="alert alert-warning">查無此編號</div>';
+                selectedUser = null;
+                return;
+            }
+            
+            selectedUser = result.data;
+            document.getElementById("userView").innerHTML = `
+                <div>
+                    <div class="mb-2">
+                        <strong>部門：</strong>${result.data.orgaN_ID || ''} ${result.data.department || ''}
+                    </div>
+                    <div class="mb-2">
+                        <strong>姓名：</strong>${result.data.locaL_NAME || ''}
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-primary" onclick="addSearchedUser()">加入</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function permissionQueryDeptUser() {
+            var code_name = document.getElementById('selectMenuDepartment');
+            if (!code_name || !code_name.value) {
+                alert('請選擇選單部門');
+                return;
+            }
+
+            selectedCodeName = code_name.value;
+            var result = await libs.api.get('/Menu/PermissionQueryDeptUser?code_name=' + encodeURIComponent(code_name.value), { loadding: false });
+            
+            if (result.code === 0 || !result.data || result.data.length === 0) {
+                document.getElementById("deptUserTableBody").innerHTML = '<tr><td colspan="4" class="text-center text-muted">查無資料</td></tr>';
+                return;
+            }
+
+            var html = '';
+            if (Array.isArray(result.data)) {
+                result.data.forEach(function(user) {
+                    html += `
+                        <tr>
+                            <td>${user.employeE_ID || ''}</td>
+                            <td>${user.orgaN_ID || ''} ${user.department || ''}</td>
+                            <td>${user.locaL_NAME || ''}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-danger" onclick="removePermission('${user.employeE_ID}')">移除</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } else {
+                html += `
+                    <tr>
+                        <td>${result.data.EMPLOYEE_ID || ''}</td>
+                        <td>${result.data.ORGAN_ID || ''} ${result.data.DEPARTMENT || ''}</td>
+                        <td>${result.data.LOCAL_NAME || ''}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger" onclick="removePermission('${result.data.EMPLOYEE_ID}')">移除</button>
+                        </td>
+                    </tr>
+                `;
+            }
+            
+            document.getElementById("deptUserTableBody").innerHTML = html;
+        }
+
+        async function addSearchedUser() {
+            if (!selectedUser) {
+                alert('請先查詢員工');
+                return;
+            }
+
+            var code_name = document.getElementById('selectMenuDepartment');
+            if (!code_name || !code_name.value) {
+                alert('請先選擇選單部門');
+                return;
+            }
+            
+            var result = await libs.api.post('/Menu/PermissionAssign', {
+                data: {
+                    code_name: code_name.value,
+                    emid: selectedUser.employeE_ID
+                },
+                loadding: true
+            });
+
+            libs.result(result, function() {
+                permissionQueryDeptUser();
+                document.getElementById("userView").innerHTML = '請輸入員工編號進行查詢';
+                document.getElementById('userNumberInput').value = '';
+                selectedUser = null;
+            });
+        }
+
+        async function removePermission(emid) {
+            if (!confirm('確定要移除權限嗎？')) {
+                return;
+            }
+
+            var code_name = document.getElementById('selectMenuDepartment');
+            if (!code_name || !code_name.value) {
+                alert('請先選擇選單部門');
+                return;
+            }
+
+            var result = await libs.api.post('/Menu/PermissionRemove', {
+                data: {
+                    code_name: code_name.value,
+                    emid: emid,
+                },
+                loadding: true
+            });
+
+            libs.result(result, function() {
+                permissionQueryDeptUser();
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var selectMenuDepartment = document.getElementById('selectMenuDepartment');
+            if (selectMenuDepartment) {
+                selectMenuDepartment.addEventListener('change', function() {
+                    if (this.value) {
+                        permissionQueryDeptUser();
+                    } else {
+                        document.getElementById("deptUserTableBody").innerHTML = '<tr><td colspan="4" class="text-center text-muted">請選擇選單部門</td></tr>';
+                    }
+                });
+            }
+        });
+    </script>
+}
+<div class="row g-3">
+    <div class="col-12 col-md-5">
+        <div class="card">
+            <div class="card-header">
+                <label class="form-label">輸入員工編號</label>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" id="userNumberInput" placeholder="請輸入員工編號，例如：00025371" value="">
+                    <button class="btn btn-primary" onclick="permissionQueryUser()" type="button">查詢</button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="userView">
+                    請輸入員工編號進行查詢
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-7">
+        <div class="card">
+            <div class="card-header">
+                <div class="mb-2">
+                    <label class="form-label">選擇選單部門</label>
+                    <select class="form-select" id="selectMenuDepartment">
+                        <option value="">請選擇選單部門</option>
+                        @foreach (var u in Model)
+                        {
+                            <option value="@u.code_name">
+                                @u.data1
+                            </option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>員編</th>
+                                <th>部門</th>
+                                <th>姓名</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="deptUserTableBody">
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">請選擇選單部門</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

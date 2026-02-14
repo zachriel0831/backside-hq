@@ -1,0 +1,577 @@
+﻿@model HQBackSite.Models.NewsModel
+@{
+    Layout = null;
+}
+<div class="modal-body p-2">
+    @using (Html.BeginForm("ICSUpdate", "Menu", FormMethod.Post, new { id = "updateForm" }))
+    {
+        @Html.HiddenFor(m => m.des_no)
+        <div class="row mb-1">
+            <div class="col-md-6">
+                <label class="form-label" for="dept">訊息類別</label>
+                <select class="form-select" id="dept" name="dept" onchange="toggleICSFields(this)">
+                    <option value="">請選擇</option>
+                    <option value="上傳文件" @(Model.dept == "上傳文件" ? "selected" : "")>上傳文件</option>
+                    <option value="資安文件" @(Model.dept == "資安文件" ? "selected" : "")>資安文件</option>
+                    <option value="ISO文件" @(Model.dept == "ISO文件" ? "selected" : "")>ISO文件</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="priority">優先順序</label>
+                @Html.TextBoxFor(m => m.priority, new { @class = "form-control", id = "priority", name = "priority", type = "number", placeholder = "數字越小越優先", value = Model.priority == 0 ? "" : Model.priority.ToString() })
+            </div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-md-12">
+                <label class="form-label" for="background">標題</label>
+                @Html.TextBoxFor(m => m.background, new { @class = "form-control", id = "background", name = "background", maxlength = "200", placeholder = "請輸入標題" })
+            </div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-md-6">
+                <label class="form-label" for="start_date">起日</label>
+                @Html.TextBoxFor(m => m.start_date, "{0:yyyy-MM-dd}", new { @class = "form-control", id = "start_date", name = "start_date", type = "date", placeholder = "請選擇起日" })
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="end_date">訖日</label>
+                @Html.TextBoxFor(m => m.end_date, "{0:yyyy-MM-dd}", new { @class = "form-control", id = "end_date", name = "end_date", type = "date", placeholder = "請選擇訖日" })
+            </div>
+        </div>
+
+        <!-- 上傳文件：URL連結 -->
+        <div class="row mb-1" id="urlpathRow" style="display: none;">
+            <div class="col-md-12">
+                <label class="form-label" for="urlpath">
+                    URL連結
+                    <small class="text-muted">（可貼上連結或上傳檔案自動取得連結）</small>
+                </label>
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.urlpath, new { @class = "form-control", id = "urlpath", name = "urlpath", placeholder = "請輸入URL連結或上傳檔案" })
+                    <button type="button" class="btn btn-outline-secondary" id="uploadUrlpathBtn" onclick="uploadFileForUrlpath()">
+                        <i class="fas fa-upload"></i> 上傳檔案
+                    </button>
+                    <input type="file" id="urlpathFileInput" style="display: none;" accept="*/*" onchange="handleUrlpathFileUpload(event)">
+                </div>
+            </div>
+        </div>
+
+        <!-- 資安文件：表格 -->
+        <div class="row mb-1" id="icsSecurityRow" style="display: none;">
+            <div class="col-md-12">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="form-label mb-0">資安文件</label>
+                    <button type="button" class="btn btn-sm btn-primary" onclick="addIcsSecurityRow()">
+                        <i class="fas fa-plus"></i> 新增
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm" id="icsSecurityTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">類別</th>
+                                <th style="width: 40%;">內容</th>
+                                <th style="width: 30%;">檔案名稱</th>
+                                <th style="width: 10%;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="icsSecurityTableBody">
+                            @if (Model.IcsGroup != null && Model.IcsGroup.list != null)
+                            {
+                                var securityList = Model.IcsGroup.list.Where(x => !string.IsNullOrEmpty(x.Category) || !string.IsNullOrEmpty(x.DocName) || !string.IsNullOrEmpty(x.DocUrl)).ToList();
+                                for (int i = 0; i < securityList.Count; i++)
+                                {
+                                    var item = securityList[i];
+                                    <tr data-index="@i" data-listid="@item.ListID">
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm" name="icsSecurity[@i].Category" value="@(item.Category ?? "")" placeholder="類別">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm" name="icsSecurity[@i].Content" value="@(item.DocName ?? "")" placeholder="內容">
+                                        </td>
+                                        <td>
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" class="form-control" name="icsSecurity[@i].FileName" value="@(string.IsNullOrEmpty(item.DocUrl) ? "" : System.IO.Path.GetFileName(item.DocUrl))" placeholder="檔案名稱" readonly>
+                                                <button type="button" class="btn btn-outline-secondary" onclick="uploadFileForIcsSecurity(@i)">
+                                                    <i class="fas fa-upload"></i>
+                                                </button>
+                                                <input type="file" id="icsSecurityFile_@i" style="display: none;" accept="*/*" onchange="handleIcsSecurityFileUpload(event, @i)">
+                                                <input type="hidden" name="icsSecurity[@i].DocUrl" value="@(item.DocUrl ?? "")">
+                                                <input type="hidden" name="icsSecurity[@i].ListID" value="@item.ListID">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="removeIcsSecurityRow(@i)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ISO文件：表格 -->
+        <div class="row mb-1" id="icsIsoRow" style="display: none;">
+            <div class="col-md-12">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="form-label mb-0">ISO文件</label>
+                    <button type="button" class="btn btn-sm btn-primary" onclick="addIcsIsoRow()">
+                        <i class="fas fa-plus"></i> 新增
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm" id="icsIsoTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%;">序號</th>
+                                <th style="width: 15%;">文件編號</th>
+                                <th style="width: 20%;">文件名稱</th>
+                                <th style="width: 20%;">相關文件（附件及表單）</th>
+                                <th style="width: 15%;">文件負責人</th>
+                                <th style="width: 15%;">備註</th>
+                                <th style="width: 5%;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="icsIsoTableBody">
+                            @if (Model.IcsGroup != null && Model.IcsGroup.list != null)
+                            {
+                                var isoList = Model.IcsGroup.list.Where(x => !string.IsNullOrEmpty(x.DocNo) || !string.IsNullOrEmpty(x.DocName)).ToList();
+                                for (int i = 0; i < isoList.Count; i++)
+                                {
+                                    var item = isoList[i];
+                                    <tr data-index="@i" data-listid="@item.ListID">
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm" name="icsIso[@i].SerialNumber" value="@(item.Category ?? "")" placeholder="序號">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm" name="icsIso[@i].DocNo" value="@(item.DocNo ?? "")" placeholder="文件編號">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm" name="icsIso[@i].DocName" value="@(item.DocName ?? "")" placeholder="文件名稱">
+                                        </td>
+                                        <td>
+                                            <div class="input-group input-group-sm">
+                                                <input type="text" class="form-control" name="icsIso[@i].AttachmentInfo" value="@(item.AttachmentInfo ?? "")" placeholder="相關文件" readonly>
+                                                <button type="button" class="btn btn-outline-secondary" onclick="uploadFileForIcsIso(@i)">
+                                                    <i class="fas fa-upload"></i>
+                                                </button>
+                                                <input type="file" id="icsIsoFile_@i" style="display: none;" accept="*/*" onchange="handleIcsIsoFileUpload(event, @i)">
+                                                <input type="hidden" name="icsIso[@i].DocUrl" value="@(item.DocUrl ?? "")">
+                                                <input type="hidden" name="icsIso[@i].ListID" value="@item.ListID">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm" name="icsIso[@i].MainUser" value="@(item.MainUser ?? "")" placeholder="文件負責人">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm" name="icsIso[@i].Remark" value="@(item.Remark ?? "")" placeholder="備註">
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger" onclick="removeIcsIsoRow(@i)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+    <button type="button" class="btn btn-primary" onclick="submitUpdateForm()">確定</button>
+</div>
+<script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+<script src="~/Scripts/lib.ckeditor.js"></script>
+<script src="~/Scripts/content.js"></script>
+<script>
+    var icsSecurityRowIndex = @(Model.IcsGroup != null && Model.IcsGroup.list != null ? Model.IcsGroup.list.Count(x => !string.IsNullOrEmpty(x.Category) || !string.IsNullOrEmpty(x.DocName) || !string.IsNullOrEmpty(x.DocUrl)) : 0);
+    var icsIsoRowIndex = @(Model.IcsGroup != null && Model.IcsGroup.list != null ? Model.IcsGroup.list.Count(x => !string.IsNullOrEmpty(x.DocNo) || !string.IsNullOrEmpty(x.DocName)) : 0);
+
+    // 切換顯示對應的表單區塊（寫法同 ICSAdd）
+    function toggleICSFields(ts) {
+        var deptSelect = ts || document.getElementById('dept');
+        if (!deptSelect) return;
+
+        var dept = deptSelect.value;
+
+        var urlpathRow = document.getElementById('urlpathRow');
+        var icsSecurityRow = document.getElementById('icsSecurityRow');
+        var icsIsoRow = document.getElementById('icsIsoRow');
+
+        // 隱藏所有區塊
+        if (urlpathRow) urlpathRow.style.display = 'none';
+        if (icsSecurityRow) icsSecurityRow.style.display = 'none';
+        if (icsIsoRow) icsIsoRow.style.display = 'none';
+
+        // 根據選擇顯示對應區塊
+        if (dept === "上傳文件" && urlpathRow) {
+            urlpathRow.style.display = 'block';
+        } else if (dept === "資安文件" && icsSecurityRow) {
+            icsSecurityRow.style.display = 'block';
+        } else if (dept === "ISO文件" && icsIsoRow) {
+            icsIsoRow.style.display = 'block';
+        }
+    }
+
+    function uploadFileForUrlpath() {
+        var fileInput = document.getElementById('urlpathFileInput');
+        if (fileInput) {
+            fileInput.click();
+        }
+    }
+
+    async function handleUrlpathFileUpload(event) {
+        var file = event.target.files[0];
+        if (!file) return;
+
+        var formData = new FormData();
+        formData.append('file', file);
+
+        var uploadBtn = document.getElementById('uploadUrlpathBtn');
+        var originalText = uploadBtn.innerHTML;
+        uploadBtn.disabled = true;
+        uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 上傳中...';
+
+        try {
+            var response = await fetch('/Menu/UploadFileForUrl', {
+                method: 'POST',
+                body: formData
+            });
+            var result = await response.json();
+
+            if (result.code === 1 && result.data && result.data.url) {
+                var urlpathInput = document.getElementById('urlpath');
+                if (urlpathInput) {
+                    urlpathInput.value = result.data.url;
+                }
+            } else {
+                alert(result.message || '上傳失敗');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            alert('上傳失敗：' + error.message);
+        } finally {
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = originalText;
+            event.target.value = '';
+        }
+    }
+
+    function addIcsSecurityRow() {
+        var tbody = document.getElementById('icsSecurityTableBody');
+        if (!tbody) return;
+
+        var row = document.createElement('tr');
+        row.setAttribute('data-index', icsSecurityRowIndex);
+        row.innerHTML = `
+            <td>
+                <input type="text" class="form-control form-control-sm" name="icsSecurity[${icsSecurityRowIndex}].Category" placeholder="類別">
+            </td>
+            <td>
+                <input type="text" class="form-control form-control-sm" name="icsSecurity[${icsSecurityRowIndex}].Content" placeholder="內容">
+            </td>
+            <td>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" name="icsSecurity[${icsSecurityRowIndex}].FileName" placeholder="檔案名稱" readonly>
+                    <button type="button" class="btn btn-outline-secondary" onclick="uploadFileForIcsSecurity(${icsSecurityRowIndex})">
+                        <i class="fas fa-upload"></i>
+                    </button>
+                    <input type="file" id="icsSecurityFile_${icsSecurityRowIndex}" style="display: none;" accept="*/*" onchange="handleIcsSecurityFileUpload(event, ${icsSecurityRowIndex})">
+                    <input type="hidden" name="icsSecurity[${icsSecurityRowIndex}].DocUrl">
+                    <input type="hidden" name="icsSecurity[${icsSecurityRowIndex}].ListID" value="0">
+                </div>
+            </td>
+            <td>
+                <button type="button" class="btn btn-sm btn-danger" onclick="removeIcsSecurityRow(${icsSecurityRowIndex})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+        icsSecurityRowIndex++;
+    }
+
+    function removeIcsSecurityRow(index) {
+        var row = document.querySelector(`#icsSecurityTableBody tr[data-index="${index}"]`);
+        if (row) {
+            var listIdInput = row.querySelector('input[name*="ListID"]');
+            if (listIdInput && listIdInput.value && listIdInput.value !== '0') {
+                // 標記為刪除
+                var deleteInput = document.createElement('input');
+                deleteInput.type = 'hidden';
+                deleteInput.name = `icsSecurity[${index}].Deleted`;
+                deleteInput.value = '1';
+                row.appendChild(deleteInput);
+                row.style.display = 'none';
+            } else {
+                row.remove();
+            }
+        }
+    }
+
+    function uploadFileForIcsSecurity(index) {
+        var fileInput = document.getElementById(`icsSecurityFile_${index}`);
+        if (fileInput) {
+            fileInput.click();
+        }
+    }
+
+    async function handleIcsSecurityFileUpload(event, index) {
+        var file = event.target.files[0];
+        if (!file) return;
+
+        var formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            var response = await fetch('/Menu/UploadFileForUrl', {
+                method: 'POST',
+                body: formData
+            });
+            var result = await response.json();
+
+            if (result.code === 1 && result.data && result.data.url) {
+                var fileNameInput = document.querySelector(`#icsSecurityTableBody tr[data-index="${index}"] input[name*="FileName"]`);
+                if (fileNameInput) {
+                    fileNameInput.value = file.name;
+                    var row = document.querySelector(`#icsSecurityTableBody tr[data-index="${index}"]`);
+                    if (row) {
+                        var urlInput = row.querySelector('input[name*="DocUrl"]');
+                        if (urlInput) {
+                            urlInput.value = result.data.url;
+                        }
+                    }
+                }
+            } else {
+                alert(result.message || '上傳失敗');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            alert('上傳失敗：' + error.message);
+        } finally {
+            event.target.value = '';
+        }
+    }
+
+    function addIcsIsoRow() {
+        var tbody = document.getElementById('icsIsoTableBody');
+        if (!tbody) return;
+
+        var row = document.createElement('tr');
+        row.setAttribute('data-index', icsIsoRowIndex);
+        row.innerHTML = `
+            <td>
+                <input type="text" class="form-control form-control-sm" name="icsIso[${icsIsoRowIndex}].SerialNumber" placeholder="序號">
+            </td>
+            <td>
+                <input type="text" class="form-control form-control-sm" name="icsIso[${icsIsoRowIndex}].DocNo" placeholder="文件編號">
+            </td>
+            <td>
+                <input type="text" class="form-control form-control-sm" name="icsIso[${icsIsoRowIndex}].DocName" placeholder="文件名稱">
+            </td>
+            <td>
+                <div class="input-group input-group-sm">
+                    <input type="text" class="form-control" name="icsIso[${icsIsoRowIndex}].AttachmentInfo" placeholder="相關文件" readonly>
+                    <button type="button" class="btn btn-outline-secondary" onclick="uploadFileForIcsIso(${icsIsoRowIndex})">
+                        <i class="fas fa-upload"></i>
+                    </button>
+                    <input type="file" id="icsIsoFile_${icsIsoRowIndex}" style="display: none;" accept="*/*" onchange="handleIcsIsoFileUpload(event, ${icsIsoRowIndex})">
+                    <input type="hidden" name="icsIso[${icsIsoRowIndex}].DocUrl">
+                    <input type="hidden" name="icsIso[${icsIsoRowIndex}].ListID" value="0">
+                </div>
+            </td>
+            <td>
+                <input type="text" class="form-control form-control-sm" name="icsIso[${icsIsoRowIndex}].MainUser" placeholder="文件負責人">
+            </td>
+            <td>
+                <input type="text" class="form-control form-control-sm" name="icsIso[${icsIsoRowIndex}].Remark" placeholder="備註">
+            </td>
+            <td>
+                <button type="button" class="btn btn-sm btn-danger" onclick="removeIcsIsoRow(${icsIsoRowIndex})">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+        icsIsoRowIndex++;
+    }
+
+    function removeIcsIsoRow(index) {
+        var row = document.querySelector(`#icsIsoTableBody tr[data-index="${index}"]`);
+        if (row) {
+            var listIdInput = row.querySelector('input[name*="ListID"]');
+            if (listIdInput && listIdInput.value && listIdInput.value !== '0') {
+                // 標記為刪除
+                var deleteInput = document.createElement('input');
+                deleteInput.type = 'hidden';
+                deleteInput.name = `icsIso[${index}].Deleted`;
+                deleteInput.value = '1';
+                row.appendChild(deleteInput);
+                row.style.display = 'none';
+            } else {
+                row.remove();
+            }
+        }
+    }
+
+    function uploadFileForIcsIso(index) {
+        var fileInput = document.getElementById(`icsIsoFile_${index}`);
+        if (fileInput) {
+            fileInput.click();
+        }
+    }
+
+    async function handleIcsIsoFileUpload(event, index) {
+        var file = event.target.files[0];
+        if (!file) return;
+
+        var formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            var response = await fetch('/Menu/UploadFileForUrl', {
+                method: 'POST',
+                body: formData
+            });
+            var result = await response.json();
+
+            if (result.code === 1 && result.data && result.data.url) {
+                var attachmentInput = document.querySelector(`#icsIsoTableBody tr[data-index="${index}"] input[name*="AttachmentInfo"]`);
+                if (attachmentInput) {
+                    attachmentInput.value = file.name;
+                    var row = document.querySelector(`#icsIsoTableBody tr[data-index="${index}"]`);
+                    if (row) {
+                        var urlInput = row.querySelector('input[name*="DocUrl"]');
+                        if (urlInput) {
+                            urlInput.value = result.data.url;
+                        }
+                    }
+                }
+            } else {
+                alert(result.message || '上傳失敗');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            alert('上傳失敗：' + error.message);
+        } finally {
+            event.target.value = '';
+        }
+    }
+
+    // 初始化：根據當前 dept 預設值顯示對應區塊（寫法同 ICSAdd）
+    function initICSFields() {
+        setTimeout(function () {
+            toggleICSFields();
+        }, 200);
+    }
+
+    if (window.jQuery) {
+        // Modal 顯示後
+        window.jQuery(document).on('shown.bs.modal', function () {
+            initICSFields();
+        });
+
+        // 自訂事件（lib.js 在載入 modal 後會觸發）
+        window.addEventListener('modalContentLoaded', function () {
+            initICSFields();
+        });
+    }
+
+    // 若直接載入（非 modal）
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initICSFields);
+    } else {
+        initICSFields();
+    }
+
+    async function submitUpdateForm() {
+        var form = document.getElementById('updateForm');
+        if (!form) {
+            alert('表單不存在');
+            return;
+        }
+
+        var formData = new FormData(form);
+        
+        // 收集資安文件資料
+        var icsSecurityData = [];
+        var securityRows = document.querySelectorAll('#icsSecurityTableBody tr');
+        securityRows.forEach(function(row) {
+            if (row.style.display === 'none') return; // 跳過已標記刪除的列
+            
+            var category = row.querySelector('input[name*="Category"]')?.value || '';
+            var content = row.querySelector('input[name*="Content"]')?.value || '';
+            var fileName = row.querySelector('input[name*="FileName"]')?.value || '';
+            var docUrl = row.querySelector('input[name*="DocUrl"]')?.value || '';
+            var listId = row.querySelector('input[name*="ListID"]')?.value || '0';
+            var deleted = row.querySelector('input[name*="Deleted"]')?.value || '0';
+            
+            icsSecurityData.push({
+                ListID: parseInt(listId) || 0,
+                Category: category,
+                Content: content,
+                FileName: fileName,
+                DocUrl: docUrl,
+                Deleted: deleted === '1' ? 1 : 0
+            });
+        });
+
+        // 收集 ISO 文件資料
+        var icsIsoData = [];
+        var isoRows = document.querySelectorAll('#icsIsoTableBody tr');
+        isoRows.forEach(function(row) {
+            if (row.style.display === 'none') return; // 跳過已標記刪除的列
+            
+            var serialNumber = row.querySelector('input[name*="SerialNumber"]')?.value || '';
+            var docNo = row.querySelector('input[name*="DocNo"]')?.value || '';
+            var docName = row.querySelector('input[name*="DocName"]')?.value || '';
+            var attachmentInfo = row.querySelector('input[name*="AttachmentInfo"]')?.value || '';
+            var docUrl = row.querySelector('input[name*="DocUrl"]')?.value || '';
+            var mainUser = row.querySelector('input[name*="MainUser"]')?.value || '';
+            var remark = row.querySelector('input[name*="Remark"]')?.value || '';
+            var listId = row.querySelector('input[name*="ListID"]')?.value || '0';
+            var deleted = row.querySelector('input[name*="Deleted"]')?.value || '0';
+            
+            icsIsoData.push({
+                ListID: parseInt(listId) || 0,
+                SerialNumber: serialNumber,
+                DocNo: docNo,
+                DocName: docName,
+                AttachmentInfo: attachmentInfo,
+                DocUrl: docUrl,
+                MainUser: mainUser,
+                Remark: remark,
+                Deleted: deleted === '1' ? 1 : 0
+            });
+        });
+
+        var data = Object.fromEntries(formData);
+        data.icsSecurityData = JSON.stringify(icsSecurityData);
+        data.icsIsoData = JSON.stringify(icsIsoData);
+
+        try {
+            var result = await libs.api.post('/Menu/ICSUpdate', {
+                data: data,
+                loadding: true
+            });
+
+            libs.result(result, function () {
+                if (typeof query === 'function') {
+                    query();
+                }
+                libs.modal.closeModal();
+            });
+        } catch (error) {
+            console.error('Submit form error:', error);
+            alert('提交失敗：' + (error.message || '未知錯誤'));
+        }
+    }
+</script>

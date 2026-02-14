@@ -1,0 +1,38 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_LayoutForAnonymous.cshtml";
+    ViewBag.Title = "新光三越HQ系統-使用者登入";
+}
+@section Scripts {
+    <script src="~/Scripts/login.js"></script>
+}
+<div class="d-flex align-items-center justify-content-center min-vh-100">
+    <div class="card login-card">
+        <div class="card-body p-5">
+            <h4 class="card-title text-center mb-4 login-card-title">
+                <span class="login-card-title-text">新光三越HQ系統-使用者登入</span>
+            </h4>
+            <div>
+                <div class="mb-3">
+                    <label class="form-label">帳號</label>
+                    <input type="text" class="form-control" id="account" placeholder="請輸入帳號(例如 00012345)">
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">密碼</label>
+                    <input type="password" class="form-control" id="password" placeholder="請輸入密碼">
+                </div>
+                <button type="button" class="btn btn-primary w-100" onclick="login()">登入</button>
+            </div>
+            <label class="col-md-10 pt-2">
+                說明：
+                <br>
+                (1) 員工編號：請輸入您的員工編號
+                <br>
+                (2) 密碼：請輸入您登入電腦或存取電子郵件的網域密碼
+                <br>
+                (3) 目前 EP 網站密碼已整合「網域密碼」，若遺忘此密碼請聯絡店內系統組人員或「資訊部_各系統帳號申請解鎖窗口&lt;IT_ESS@skm.com.tw&gt;」
+            </label>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,1136 @@
+﻿
+@{
+    ViewBag.Title = "FaxView";
+    Layout = null;
+}
+
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=big5">
+<meta name=ProgId content=Excel.Sheet>
+<meta name=Generator content="Microsoft Excel 11">
+<link rel=File-List href="fax.files/filelist.xml">
+<link rel=Edit-Time-Data href="fax.files/editdata.mso">
+<link rel=OLE-Object-Data href="fax.files/oledata.mso">
+<title>各店緊急電話及傳真一覽</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>skm</o:Author>
+  <o:LastAuthor>skm</o:LastAuthor>
+  <o:Created>2007-05-05T06:05:01Z</o:Created>
+  <o:LastSaved>2010-05-20T06:24:24Z</o:LastSaved>
+  <o:Company>skm</o:Company>
+  <o:Version>11.5606</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--table
+	{mso-displayed-decimal-separator:"\.";
+	mso-displayed-thousand-separator:"\,";}
+	
+tr
+	{mso-height-source:auto;
+	mso-ruby-visibility:none;}
+col
+	{mso-width-source:auto;
+	mso-ruby-visibility:none;}
+br
+	{mso-data-placement:same-cell;}
+.style0
+	{mso-number-format:General;
+	text-align:general;
+	vertical-align:middle;
+	white-space:nowrap;
+	mso-rotate:0;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:新細明體, serif;
+	mso-font-charset:136;
+	border:none;
+	mso-protection:locked visible;
+	mso-style-name:一般;
+	mso-style-id:0;}
+td
+	{mso-style-parent:style0;
+	padding-top:1px;
+	padding-right:1px;
+	padding-left:1px;
+	mso-ignore:padding;
+	color:windowtext;
+	font-size:12.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:新細明體, serif;
+	mso-font-charset:136;
+	mso-number-format:General;
+	text-align:general;
+	vertical-align:middle;
+	border:none;
+	mso-background-source:auto;
+	mso-pattern:auto;
+	mso-protection:locked visible;
+	white-space:nowrap;
+	mso-rotate:0;}
+.xl24
+	{mso-style-parent:style0;
+	text-align:center;
+	border-top:none;
+	border-right:none;
+	border-bottom:1.0pt solid windowtext;
+	border-left:1.0pt solid windowtext;}
+.xl25
+	{mso-style-parent:style0;
+	color:#333699;
+	text-align:center;
+	border-top:none;
+	border-right:1.0pt solid windowtext;
+	border-bottom:1.0pt solid windowtext;
+	border-left:none;}
+.xl26
+	{mso-style-parent:style0;
+	text-align:center;
+	border-top:none;
+	border-right:none;
+	border-bottom:1.0pt solid windowtext;
+	border-left:none;}
+.xl27
+	{mso-style-parent:style0;
+	font-weight:700;}
+.xl28
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:none;
+	border-bottom:none;
+	border-left:1.0pt solid windowtext;}
+.xl29
+	{mso-style-parent:style0;
+	text-align:right;
+	border-top:none;
+	border-right:1.0pt solid windowtext;
+	border-bottom:none;
+	border-left:none;}
+.xl30
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:1.0pt solid windowtext;
+	border-bottom:none;
+	border-left:none;}
+.xl31
+	{mso-style-parent:style0;
+	text-align:right;}
+.xl32
+	{mso-style-parent:style0;
+	mso-number-format:"\";
+	text-align:right;
+	border-top:none;
+	border-right:1.0pt solid windowtext;
+	border-bottom:none;
+	border-left:none;}
+.xl33
+	{mso-style-parent:style0;
+	mso-number-format:"\";
+	border-top:none;
+	border-right:1.0pt solid windowtext;
+	border-bottom:none;
+	border-left:none;}
+.xl34
+	{mso-style-parent:style0;
+	mso-number-format:"\";
+	text-align:right;
+	border-top:none;
+	border-right:none;
+	border-bottom:none;
+	border-left:1.0pt solid windowtext;}
+.xl35
+	{mso-style-parent:style0;
+	mso-number-format:"\";
+	text-align:right;}
+.xl36
+	{mso-style-parent:style0;
+	mso-number-format:"\";
+	text-align:right;
+	border-top:none;
+	border-right:none;
+	border-bottom:1.0pt solid windowtext;
+	border-left:1.0pt solid windowtext;}
+.xl37
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:1.0pt solid windowtext;
+	border-bottom:1.0pt solid windowtext;
+	border-left:none;}
+.xl38
+	{mso-style-parent:style0;
+	mso-number-format:"\";
+	text-align:right;
+	border-top:none;
+	border-right:none;
+	border-bottom:1.0pt solid windowtext;
+	border-left:none;}
+.xl39
+	{mso-style-parent:style0;
+	border-top:none;
+	border-right:none;
+	border-bottom:1.0pt solid windowtext;
+	border-left:none;}
+.xl40
+	{mso-style-parent:style0;
+	text-align:right;
+	border-top:none;
+	border-right:none;
+	border-bottom:1.0pt solid windowtext;
+	border-left:none;}
+.xl41
+	{mso-style-parent:style0;
+	text-align:right;
+	border-top:none;
+	border-right:1.0pt solid windowtext;
+	border-bottom:1.0pt solid windowtext;
+	border-left:none;}
+.xl42
+	{mso-style-parent:style0;
+	font-size:10.0pt;}
+.xl43
+	{mso-style-parent:style0;
+	font-size:10.0pt;
+	mso-number-format:"Short Date";
+	text-align:left;}
+.xl44
+	{mso-style-parent:style0;
+	color:#FF6600;
+	font-weight:700;
+	text-align:left;
+	background:#FFFF99;
+	mso-pattern:auto none;}
+.xl45
+	{mso-style-parent:style0;
+	color:white;
+	font-weight:700;
+	text-align:center;
+	border-top:1.0pt solid windowtext;
+	border-right:none;
+	border-bottom:none;
+	border-left:1.0pt solid windowtext;
+	background:#99CCFF;
+	mso-pattern:auto none;}
+.xl46
+	{mso-style-parent:style0;
+	color:white;
+	font-weight:700;
+	text-align:center;
+	border-top:1.0pt solid windowtext;
+	border-right:1.0pt solid black;
+	border-bottom:none;
+	border-left:none;
+	background:#99CCFF;
+	mso-pattern:auto none;}
+.xl47
+	{mso-style-parent:style0;
+	color:white;
+	font-weight:700;
+	text-align:center;
+	border-top:1.0pt solid windowtext;
+	border-right:none;
+	border-bottom:none;
+	border-left:1.0pt solid black;
+	background:#FF99CC;
+	mso-pattern:auto none;}
+.xl48
+	{mso-style-parent:style0;
+	color:white;
+	font-weight:700;
+	text-align:center;
+	border-top:1.0pt solid windowtext;
+	border-right:1.0pt solid black;
+	border-bottom:none;
+	border-left:none;
+	background:#FF99CC;
+	mso-pattern:auto none;}
+.xl49
+	{mso-style-parent:style0;
+	color:white;
+	font-weight:700;
+	text-align:center;
+	border-top:1.0pt solid windowtext;
+	border-right:none;
+	border-bottom:none;
+	border-left:1.0pt solid black;
+	background:#99CCFF;
+	mso-pattern:auto none;}
+ruby
+	{ruby-align:left;}
+rt
+	{color:windowtext;
+	font-size:9.0pt;
+	font-weight:400;
+	font-style:normal;
+	text-decoration:none;
+	font-family:新細明體, serif;
+	mso-font-charset:136;
+	mso-char-type:none;
+	display:none;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <x:ExcelWorkbook>
+  <x:ExcelWorksheets>
+   <x:ExcelWorksheet>
+    <x:Name>緊急聯級電話及傳真號碼</x:Name>
+    <x:WorksheetOptions>
+     <x:DefaultRowHeight>330</x:DefaultRowHeight>
+     <x:Print>
+      <x:ValidPrinterInfo/>
+      <x:PaperSizeIndex>9</x:PaperSizeIndex>
+      <x:HorizontalResolution>600</x:HorizontalResolution>
+      <x:VerticalResolution>600</x:VerticalResolution>
+     </x:Print>
+     <x:Selected/>
+     <x:FreezePanes/>
+     <x:FrozenNoSplit/>
+     <x:SplitHorizontal>2</x:SplitHorizontal>
+     <x:TopRowBottomPane>2</x:TopRowBottomPane>
+     <x:SplitVertical>1</x:SplitVertical>
+     <x:LeftColumnRightPane>26</x:LeftColumnRightPane>
+     <x:ActivePane>0</x:ActivePane>
+     <x:Panes>
+      <x:Pane>
+       <x:Number>3</x:Number>
+      </x:Pane>
+      <x:Pane>
+       <x:Number>1</x:Number>
+       <x:ActiveCol>1</x:ActiveCol>
+      </x:Pane>
+      <x:Pane>
+       <x:Number>2</x:Number>
+      </x:Pane>
+      <x:Pane>
+       <x:Number>0</x:Number>
+       <x:ActiveRow>14</x:ActiveRow>
+       <x:ActiveCol>34</x:ActiveCol>
+      </x:Pane>
+     </x:Panes>
+     <x:ProtectContents>False</x:ProtectContents>
+     <x:ProtectObjects>False</x:ProtectObjects>
+     <x:ProtectScenarios>False</x:ProtectScenarios>
+    </x:WorksheetOptions>
+   </x:ExcelWorksheet>
+  </x:ExcelWorksheets>
+  <x:WindowHeight>8670</x:WindowHeight>
+  <x:WindowWidth>14955</x:WindowWidth>
+  <x:WindowTopX>120</x:WindowTopX>
+  <x:WindowTopY>105</x:WindowTopY>
+  <x:ProtectStructure>False</x:ProtectStructure>
+  <x:ProtectWindows>False</x:ProtectWindows>
+ </x:ExcelWorkbook>
+</xml><![endif]-->
+</head>
+
+<body link=blue vlink=purple>
+
+<table x:str border=0 cellpadding=0 cellspacing=0 width=3256 style='border-collapse:
+ collapse;table-layout:fixed;width:2442pt'>
+ <col width=86 style='mso-width-source:userset;mso-width-alt:2752;width:65pt'>
+ <col width=84 style='mso-width-source:userset;mso-width-alt:2688;width:63pt'>
+ <col width=104 style='mso-width-source:userset;mso-width-alt:3328;width:78pt'>
+ <col width=84 style='mso-width-source:userset;mso-width-alt:2688;width:63pt'>
+ <col width=104 style='mso-width-source:userset;mso-width-alt:3328;width:78pt'>
+ <col width=84 style='mso-width-source:userset;mso-width-alt:2688;width:63pt'>
+ <col width=104 style='mso-width-source:userset;mso-width-alt:3328;width:78pt'>
+ <col width=76 style='mso-width-source:userset;mso-width-alt:2432;width:57pt'>
+ <col width=104 style='mso-width-source:userset;mso-width-alt:3328;width:78pt'>
+ <col width=76 style='mso-width-source:userset;mso-width-alt:2432;width:57pt'>
+ <col width=104 style='mso-width-source:userset;mso-width-alt:3328;width:78pt'>
+ <col width=76 style='mso-width-source:userset;mso-width-alt:2432;width:57pt'>
+ <col width=104 style='mso-width-source:userset;mso-width-alt:3328;width:78pt'>
+ <col width=72 style='width:54pt'>
+ <col width=104 style='mso-width-source:userset;mso-width-alt:3328;width:78pt'>
+ <col width=76 style='mso-width-source:userset;mso-width-alt:2432;width:57pt'>
+ <col width=104 style='mso-width-source:userset;mso-width-alt:3328;width:78pt'>
+ <col width=139 style='mso-width-source:userset;mso-width-alt:4448;width:104pt'>
+ <col width=104 style='mso-width-source:userset;mso-width-alt:3328;width:78pt'>
+ <col width=86 style='mso-width-source:userset;mso-width-alt:2752;width:65pt'>
+ <col width=95 style='mso-width-source:userset;mso-width-alt:3040;width:71pt'>
+ <col width=88 style='mso-width-source:userset;mso-width-alt:2816;width:66pt'>
+ <col width=95 style='mso-width-source:userset;mso-width-alt:3040;width:71pt'>
+ <col width=80 style='mso-width-source:userset;mso-width-alt:2560;width:60pt'>
+ <col width=95 style='mso-width-source:userset;mso-width-alt:3040;width:71pt'>
+ <col width=84 style='mso-width-source:userset;mso-width-alt:2688;width:63pt'>
+ <col width=144 style='mso-width-source:userset;mso-width-alt:4608;width:108pt'>
+ <col width=90 style='mso-width-source:userset;mso-width-alt:2880;width:68pt'>
+ <col width=95 style='mso-width-source:userset;mso-width-alt:3040;width:71pt'>
+ <col width=76 style='mso-width-source:userset;mso-width-alt:2432;width:57pt'>
+ <col width=95 style='mso-width-source:userset;mso-width-alt:3040;width:71pt'>
+ <col width=76 style='mso-width-source:userset;mso-width-alt:2432;width:57pt'>
+ <col width=95 style='mso-width-source:userset;mso-width-alt:3040;width:71pt'>
+ <col width=78 style='mso-width-source:userset;mso-width-alt:2496;width:59pt'>
+ <col width=95 style='mso-width-source:userset;mso-width-alt:3040;width:71pt'>
+ <tr height=23 style='height:17.25pt'>
+  <td colspan=35 height=23 class=xl44 width=3256 style='height:17.25pt;
+  width:2442pt'>　</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 style='height:16.5pt'></td>
+  <td colspan=2 class=xl45 style='border-right:1.0pt solid black'>台北南西店一館</td>
+  <td colspan=2 class=xl47 style='border-right:1.0pt solid black;border-left:
+  none'>台北南西店二館</td>
+  <td colspan=2 class=xl49 style='border-right:1.0pt solid black;border-left:
+  none'>台北南西店三館</td>
+  <td colspan=2 class=xl47 style='border-right:1.0pt solid black;border-left:
+  none'>台北站前店</td>
+  <td colspan=2 class=xl49 style='border-right:1.0pt solid black;border-left:
+  none'>台北信義新天地 A8</td>
+  <td colspan=2 class=xl47 style='border-right:1.0pt solid black;border-left:
+  none'>台北信義新天地 A11</td>
+  <td colspan=2 class=xl49 style='border-right:1.0pt solid black;border-left:
+  none'>台北信義新天地 A9</td>
+  <td colspan=2 class=xl47 style='border-right:1.0pt solid black;border-left:
+  none'>台北信義新天地 A4</td>
+  <td colspan=2 class=xl49 style='border-right:1.0pt solid black;border-left:
+  none'>台北天母店</td>
+  <td colspan=2 class=xl47 style='border-right:1.0pt solid black;border-left:
+  none'>桃園大有店</td>
+  <td colspan=2 class=xl49 style='border-right:1.0pt solid black;border-left:
+  none'>桃園站前店</td>
+  <td colspan=2 class=xl47 style='border-right:1.0pt solid black;border-left:
+  none'>新竹中華店</td>
+  <td colspan=2 class=xl49 style='border-right:1.0pt solid black;border-left:
+  none'>台中中港店</td>
+  <td colspan=2 class=xl47 style='border-right:1.0pt solid black;border-left:
+  none'>嘉義垂楊店</td>
+  <td colspan=2 class=xl49 style='border-right:1.0pt solid black;border-left:
+  none'>高雄三多店</td>
+  <td colspan=2 class=xl47 style='border-right:1.0pt solid black;border-left:
+  none'>台南中山店</td>
+  <td colspan=2 class=xl49 style='border-right:1.0pt solid black;border-left:
+  none'>台南西門店</td>
+ </tr>
+ <tr height=23 style='height:17.25pt'>
+  <td height=23 style='height:17.25pt'></td>
+  <td class=xl24>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+  <td class=xl26>聯絡電話</td>
+  <td class=xl25>傳真電話</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>店長室</td>
+  <td class=xl28 align=right x:num>8803</td>
+  <td class=xl29>02-2522-8833</td>
+  <td align=right x:num>8801</td>
+  <td class=xl29>02-2522-8833</td>
+  <td align=right x:num>8801</td>
+  <td class=xl29>02-2522-8833</td>
+  <td align=right x:num>5950</td>
+  <td class=xl29>02-2382-4900</td>
+  <td></td>
+  <td class=xl30>　</td>
+  <td></td>
+  <td class=xl30>　</td>
+  <td></td>
+  <td class=xl30>　</td>
+  <td></td>
+  <td class=xl30>　</td>
+  <td class=xl31 x:num="7901.3603999999996">7901.3604</td>
+  <td class=xl29>02-2875-7930</td>
+  <td>03-394-2800</td>
+  <td class=xl29>03-394-2811</td>
+  <td>03-250-2188</td>
+  <td class=xl29>03-250-2055</td>
+  <td class=xl31 x:num>8855</td>
+  <td class=xl29>03-515-8820</td>
+  <td class=xl31 x:num>6220</td>
+  <td class=xl30>　</td>
+  <td class=xl31>05-2282138</td>
+  <td class=xl29>05-228-2157</td>
+  <td align=right x:num>2345</td>
+  <td class=xl29>07-337-2366</td>
+  <td align=right x:num>6990</td>
+  <td class=xl29>06-229-8911</td>
+  <td align=right x:num>2999</td>
+  <td class=xl29>06-303-0500</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>人事</td>
+  <td class=xl28 align=right x:num>8886</td>
+  <td class=xl32>02-2551-8748</td>
+  <td align=right x:num>8886</td>
+  <td class=xl32>02-2551-8748</td>
+  <td align=right x:num>8886</td>
+  <td class=xl32>02-2551-8748</td>
+  <td align=right x:num>4127</td>
+  <td class=xl29>02-2382-4811</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td class=xl31 x:num>3026</td>
+  <td class=xl29>02-2875-7939</td>
+  <td>03-394-2866</td>
+  <td class=xl29>03-394-2861</td>
+  <td>03-250-2363</td>
+  <td class=xl29>03-250-2285</td>
+  <td class=xl31>5855~5856</td>
+  <td class=xl29>03-515-8827</td>
+  <td class=xl31>6957~6962</td>
+  <td class=xl29>04-2374-5828</td>
+  <td align=right x:num>103</td>
+  <td class=xl29>　</td>
+  <td align=right x:num>2327</td>
+  <td class=xl29>07-337-2311</td>
+  <td align=right x:num>8824</td>
+  <td class=xl29>06-229-8866</td>
+  <td align=right x:num>2814</td>
+  <td class=xl29>06-303-0800</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>財務</td>
+  <td class=xl28 align=right x:num>8817</td>
+  <td class=xl32>02-2522-8853</td>
+  <td align=right x:num>8817</td>
+  <td class=xl32>02-2522-8853</td>
+  <td align=right x:num>8817</td>
+  <td class=xl32>02-2522-8853</td>
+  <td align=right x:num>4156</td>
+  <td class=xl29>02-2382-4844</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td class=xl31>7911.3521.3524</td>
+  <td class=xl29>02-2875-7934</td>
+  <td>03-394-2880</td>
+  <td class=xl29>03-394-2801</td>
+  <td>03-250-2359</td>
+  <td class=xl29>03-250-2155</td>
+  <td class=xl31>5325~5332</td>
+  <td class=xl29>03-515-8827</td>
+  <td class=xl31>6970~6979</td>
+  <td class=xl29>04-2374-5828</td>
+  <td align=right x:num>123</td>
+  <td class=xl29>　</td>
+  <td align=right x:num>2341</td>
+  <td class=xl29>07-337-2311</td>
+  <td align=right x:num>8829</td>
+  <td class=xl29>06-229-8866</td>
+  <td align=right x:num>8601</td>
+  <td class=xl29>06-303-0800</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>行銷</td>
+  <td class=xl28>　</td>
+  <td class=xl32>　</td>
+  <td align=right x:num>240</td>
+  <td class=xl32>02-5552-9678</td>
+  <td align=right x:num>260</td>
+  <td class=xl32>02-5552-9678</td>
+  <td align=right x:num>4201</td>
+  <td class=xl29>02-2382-4878</td>
+  <td></td>
+  <td class=xl29>02-2757-2622</td>
+  <td></td>
+  <td class=xl29>02-2757-2622</td>
+  <td></td>
+  <td class=xl29>02-2757-2622</td>
+  <td></td>
+  <td class=xl29>02-2757-2622</td>
+  <td class=xl31>7952.3154.3074</td>
+  <td class=xl29>02-2875-7951</td>
+  <td>03-394-2834</td>
+  <td class=xl29>03-394-2831</td>
+  <td>03-250-2068</td>
+  <td class=xl29>03-250-2070</td>
+  <td class=xl31>5807~5824</td>
+  <td class=xl29>03-515-8825</td>
+  <td class=xl31>7050~7063</td>
+  <td class=xl29>04-2374-5822</td>
+  <td align=right x:num>520</td>
+  <td class=xl29>　</td>
+  <td align=right x:num>2336</td>
+  <td class=xl29>07-337-2366</td>
+  <td align=right x:num>8813</td>
+  <td class=xl29>06-229-8877</td>
+  <td align=right x:num>2761</td>
+  <td class=xl29>06-303-0700</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>營業</td>
+  <td class=xl28 align=right x:num>8818</td>
+  <td class=xl32>02-2522-8828</td>
+  <td align=right x:num>201</td>
+  <td class=xl32>02-2511-2054</td>
+  <td align=right x:num>306</td>
+  <td class=xl32>02-2521-6960</td>
+  <td align=right x:num>5543</td>
+  <td class=xl29>02-2382-4988</td>
+  <td></td>
+  <td class=xl29>02-2757-2620</td>
+  <td></td>
+  <td class=xl29>02-2757-2606</td>
+  <td></td>
+  <td class=xl29>02-2757-2664</td>
+  <td></td>
+  <td class=xl29>02-2757-2776</td>
+  <td class=xl31>7902~7903</td>
+  <td class=xl29>02-2875-7935</td>
+  <td>03-394-2813</td>
+  <td class=xl29>03-394-2831</td>
+  <td>03-250-2168</td>
+  <td class=xl29>03-250-2155</td>
+  <td class=xl31 x:num>5881</td>
+  <td class=xl29>03-515-8821</td>
+  <td class=xl31 x:num>7220</td>
+  <td class=xl29>04-2374-5824,5826</td>
+  <td align=right x:num>205</td>
+  <td class=xl29>　</td>
+  <td></td>
+  <td class=xl29>　</td>
+  <td align=right x:num>6964</td>
+  <td class=xl29>06-229-8844</td>
+  <td align=right x:num>2888</td>
+  <td class=xl29>06-303-0500</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>店舖管理</td>
+  <td class=xl28 align=right x:num>8813</td>
+  <td class=xl32>02-2551-8748</td>
+  <td align=right x:num>280</td>
+  <td class=xl32>02-2563-5478</td>
+  <td align=right x:num>280</td>
+  <td class=xl32>02-2568-2564</td>
+  <td align=right x:num>4123</td>
+  <td class=xl29>02-2382-4811</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td class=xl31 x:num>7917</td>
+  <td class=xl29>02-2875-7939</td>
+  <td>03-394-2888</td>
+  <td class=xl29>03-394-2861</td>
+  <td>03-250-2098</td>
+  <td class=xl29>03-250-2155</td>
+  <td class=xl31>5850~5852</td>
+  <td class=xl29>03-515-8826</td>
+  <td class=xl31>6951~6956</td>
+  <td class=xl29>04-2374-5828</td>
+  <td align=right x:num>220</td>
+  <td class=xl29>05-222-1555</td>
+  <td align=right x:num>2326</td>
+  <td class=xl29>07-337-2311</td>
+  <td align=right x:num>8807</td>
+  <td class=xl29>06-229-8866</td>
+  <td align=right x:num>8686</td>
+  <td class=xl29>06-303-0800</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>顧服課</td>
+  <td class=xl28 align=right x:num>8896</td>
+  <td class=xl32>　</td>
+  <td align=right x:num>365</td>
+  <td class=xl33>　</td>
+  <td align=right x:num>365</td>
+  <td class=xl33>　</td>
+  <td align=right x:num>5506</td>
+  <td class=xl29>02-2382-4855</td>
+  <td></td>
+  <td class=xl29>02-2757-2624</td>
+  <td></td>
+  <td class=xl29>02-2757-2624</td>
+  <td></td>
+  <td class=xl29>02-2757-2624</td>
+  <td></td>
+  <td class=xl29>02-2757-2624</td>
+  <td class=xl31 x:num="7956.3163000000004">7956.3163</td>
+  <td class=xl29>02-2875-7960</td>
+  <td>03-394-2804</td>
+  <td class=xl29>03-394-2831</td>
+  <td align=right x:num>3411</td>
+  <td class=xl29>03-250-2155</td>
+  <td class=xl31>5307~5308</td>
+  <td class=xl29>03-515-8821</td>
+  <td class=xl31>6941~6943</td>
+  <td class=xl29>04-2374-5838</td>
+  <td align=right x:num>242</td>
+  <td class=xl29>　</td>
+  <td align=right x:num>2357</td>
+  <td class=xl29>07-337-2311</td>
+  <td align=right x:num>8815</td>
+  <td class=xl29>　</td>
+  <td align=right x:num>8516</td>
+  <td class=xl29>06-216-8522</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>系統組</td>
+  <td class=xl28 align=right x:num>8808</td>
+  <td class=xl32>02-2522-8807</td>
+  <td align=right x:num>264</td>
+  <td class=xl33>　</td>
+  <td align=right x:num>388</td>
+  <td class=xl33>　</td>
+  <td align=right x:num>4826</td>
+  <td class=xl29>　</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td></td>
+  <td class=xl29>02-2757-2633</td>
+  <td class=xl31 x:num>7908</td>
+  <td class=xl29>02-2875-7931</td>
+  <td align=right x:num>8465</td>
+  <td class=xl29>03-394-2881</td>
+  <td align=right x:num>2602</td>
+  <td class=xl29>03-250-2155</td>
+  <td class=xl31>5866~5868</td>
+  <td class=xl29>03-515-8827</td>
+  <td class=xl31>6990~6994</td>
+  <td class=xl29>04-2374-5835</td>
+  <td align=right x:num>115</td>
+  <td class=xl29>　</td>
+  <td align=right x:num>2334</td>
+  <td class=xl29>07-337-2311</td>
+  <td align=right x:num>8808</td>
+  <td class=xl29>06-229-8866</td>
+  <td align=right x:num>2846</td>
+  <td class=xl29>06-216-8603</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>商管組</td>
+  <td class=xl28 align=right x:num>3118</td>
+  <td class=xl32>02-2522-8814</td>
+  <td align=right x:num>369</td>
+  <td class=xl33>　</td>
+  <td align=right x:num>372</td>
+  <td class=xl33>　</td>
+  <td align=right x:num>5021</td>
+  <td class=xl29>02-2382-4811</td>
+  <td align=right x:num>6080</td>
+  <td class=xl29>02-2757-2675</td>
+  <td align=right x:num>2080</td>
+  <td class=xl29>02-2757-2608</td>
+  <td></td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8080</td>
+  <td class=xl29>02-2757-2792</td>
+  <td class=xl31 x:num>3012</td>
+  <td class=xl29>02-2875-7938</td>
+  <td align=right x:num>8060</td>
+  <td class=xl29>03-394-2871</td>
+  <td class=xl31>2731~2733</td>
+  <td class=xl29>03-250-2155</td>
+  <td class=xl31>5030~5032</td>
+  <td class=xl29>03-515-8830</td>
+  <td class=xl31>7511~7516</td>
+  <td class=xl29>04-2374-5823</td>
+  <td align=right x:num>500</td>
+  <td class=xl29>05-223-0165</td>
+  <td align=right x:num>7094</td>
+  <td class=xl29>07-337-2311</td>
+  <td align=right x:num>8812</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8530</td>
+  <td class=xl29>06-216-8618</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>安管組</td>
+  <td class=xl28 align=right x:num>3058</td>
+  <td class=xl32>02-2522-8877</td>
+  <td align=right x:num>324</td>
+  <td class=xl33>　</td>
+  <td align=right x:num>377</td>
+  <td class=xl33>　</td>
+  <td align=right x:num>5051</td>
+  <td class=xl29>02-2382-4811</td>
+  <td align=right x:num>6088</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>2088</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>7088</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8088</td>
+  <td class=xl30>　</td>
+  <td class=xl31 x:num>3171</td>
+  <td class=xl29>　</td>
+  <td align=right x:num>8125</td>
+  <td class=xl29>03-394-2861</td>
+  <td align=right x:num>2741</td>
+  <td class=xl29>03-250-2155</td>
+  <td class=xl31>5010~5011</td>
+  <td class=xl30>　</td>
+  <td class=xl31>7595~7597</td>
+  <td class=xl29>04-2374-5846</td>
+  <td align=right x:num>120</td>
+  <td class=xl29>　</td>
+  <td align=right x:num>7020</td>
+  <td class=xl29>07-337-2311</td>
+  <td align=right x:num>6121</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>2124</td>
+  <td class=xl29>　</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>電機組</td>
+  <td class=xl34>3021.3031</td>
+  <td class=xl32>02-2522-8851</td>
+  <td class=xl35>285.286</td>
+  <td class=xl33>　</td>
+  <td class=xl35>687.688</td>
+  <td class=xl33>　</td>
+  <td align=right x:num>5050</td>
+  <td class=xl29>02-2382-4811</td>
+  <td align=right x:num>6091</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>2091</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>7091</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8091</td>
+  <td class=xl30>　</td>
+  <td class=xl31 x:num>3021</td>
+  <td class=xl29>02-2875-7940</td>
+  <td align=right x:num>8119</td>
+  <td class=xl29>03-394-2891</td>
+  <td class=xl31>2711~2716</td>
+  <td class=xl29>03-250-2155</td>
+  <td class=xl31 x:num>5119</td>
+  <td class=xl30>　</td>
+  <td class=xl31 x:num>7090</td>
+  <td class=xl29>04-2374-5895</td>
+  <td align=right x:num>258</td>
+  <td class=xl29>05-223-0377</td>
+  <td align=right x:num>7021</td>
+  <td class=xl29>07-337-2311</td>
+  <td align=right x:num>6112</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>2121</td>
+  <td class=xl29>06-216-8526</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>中控室</td>
+  <td class=xl34>3119.3120</td>
+  <td class=xl30>　</td>
+  <td class=xl35>278</td>
+  <td class=xl30>　</td>
+  <td class=xl35>635</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>5119</td>
+  <td class=xl29>　</td>
+  <td align=right x:num>6119</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>2119</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>7119</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8119</td>
+  <td class=xl30>　</td>
+  <td class=xl31 x:num>3119</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8119</td>
+  <td class=xl29>03-394-2891</td>
+  <td align=right x:num>6119</td>
+  <td class=xl29>03-250-2155</td>
+  <td class=xl31 x:num>5119</td>
+  <td class=xl30>　</td>
+  <td class=xl31 x:num>6119</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>119</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>7119</td>
+  <td class=xl29>07-337-2311</td>
+  <td align=right x:num>6119</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8619</td>
+  <td class=xl29>　</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>警衛室</td>
+  <td class=xl34>3110.8811</td>
+  <td class=xl30>　</td>
+  <td class=xl35>292</td>
+  <td class=xl30>　</td>
+  <td class=xl35>815</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>5110</td>
+  <td class=xl29>　</td>
+  <td align=right x:num>6110</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>2110</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>7110</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8110</td>
+  <td class=xl30>　</td>
+  <td class=xl31>A棟3110.B棟3111</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8110</td>
+  <td class=xl29>03-394-2861</td>
+  <td align=right x:num>2742</td>
+  <td class=xl30>　</td>
+  <td class=xl31 x:num>5110</td>
+  <td class=xl30>　</td>
+  <td class=xl31 x:num>6110</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>313</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>7110</td>
+  <td class=xl29>　</td>
+  <td align=right x:num>6110</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>2110</td>
+  <td class=xl30>　</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>播音室</td>
+  <td class=xl34>3113</td>
+  <td class=xl30>　</td>
+  <td class=xl35>270.271</td>
+  <td class=xl30>　</td>
+  <td class=xl35>655.657</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>5112</td>
+  <td class=xl29>02-2382-4855</td>
+  <td align=right x:num>8113</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8113</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8113</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8113</td>
+  <td class=xl30>　</td>
+  <td class=xl31 x:num>3113</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8113</td>
+  <td class=xl29>03-394-2831</td>
+  <td align=right x:num>9</td>
+  <td class=xl30>　</td>
+  <td class=xl31>5112~5113</td>
+  <td class=xl30>　</td>
+  <td class=xl31 x:num>6113</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>600</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>7016</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>6114</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>2114</td>
+  <td class=xl30>　</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>醫務室</td>
+  <td class=xl34>3617.3508</td>
+  <td class=xl30>　</td>
+  <td class=xl35>3617.3508</td>
+  <td class=xl30>　</td>
+  <td class=xl35>3617.3508</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>5508</td>
+  <td class=xl29>02-2382-4855</td>
+  <td align=right x:num>6410</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>2308</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>7309</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8510</td>
+  <td class=xl30>　</td>
+  <td class=xl31 x:num>3608</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8508</td>
+  <td class=xl29>03-394-2831</td>
+  <td></td>
+  <td class=xl30>　</td>
+  <td class=xl31>5605~5606</td>
+  <td class=xl30>　</td>
+  <td class=xl31>6607~6608</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>561</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>7812</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>6819</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>2319</td>
+  <td class=xl30>　</td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl27 style='height:16.5pt'>服務台</td>
+  <td class=xl34>3107~3109</td>
+  <td class=xl30>　</td>
+  <td class=xl35>276.277</td>
+  <td class=xl30>　</td>
+  <td class=xl35>658.659</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>5107</td>
+  <td class=xl29>02-2382-4855</td>
+  <td align=right x:num>6108</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>2108</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>7108</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8108</td>
+  <td class=xl30>　</td>
+  <td class=xl31>A棟3107.B棟3157</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>8107</td>
+  <td class=xl29>03-394-2831</td>
+  <td align=right x:num>3412</td>
+  <td class=xl30>　</td>
+  <td class=xl31>5107~5108</td>
+  <td class=xl30>　</td>
+  <td class=xl31>6107~6109</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>250</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>7107</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>6107</td>
+  <td class=xl30>　</td>
+  <td align=right x:num>2107</td>
+  <td class=xl30>　</td>
+ </tr>
+ <tr height=23 style='height:17.25pt'>
+  <td height=23 class=xl27 style='height:17.25pt'>清潔組</td>
+  <td class=xl36>3090</td>
+  <td class=xl37>　</td>
+  <td class=xl38>289</td>
+  <td class=xl37>　</td>
+  <td class=xl38>289</td>
+  <td class=xl37>　</td>
+  <td class=xl39 align=right x:num>5090</td>
+  <td class=xl37>　</td>
+  <td class=xl39 align=right x:num>6095</td>
+  <td class=xl37>　</td>
+  <td class=xl39 align=right x:num>2095</td>
+  <td class=xl37>　</td>
+  <td class=xl39 align=right x:num>7095</td>
+  <td class=xl37>　</td>
+  <td class=xl39 align=right x:num>8095</td>
+  <td class=xl37>　</td>
+  <td class=xl40 x:num>3043</td>
+  <td class=xl37>　</td>
+  <td class=xl39 align=right x:num>8090</td>
+  <td class=xl41>03-394-2861</td>
+  <td class=xl39 align=right x:num>2751</td>
+  <td class=xl37>　</td>
+  <td class=xl40>無</td>
+  <td class=xl37>　</td>
+  <td class=xl40>7095~7096</td>
+  <td class=xl37>　</td>
+  <td class=xl39 align=right x:num>638</td>
+  <td class=xl37>　</td>
+  <td class=xl39 align=right x:num>7099</td>
+  <td class=xl37><span style='mso-spacerun:yes'>&nbsp;</span></td>
+  <td class=xl39 align=right x:num>6099</td>
+  <td class=xl37>　</td>
+  <td class=xl39 align=right x:num>2035</td>
+  <td class=xl37>　</td>
+ </tr>
+ <tr height=44 style='height:33.0pt;mso-xlrowspan:2'>
+  <td height=44 colspan=35 style='height:33.0pt;mso-ignore:colspan'></td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl42 style='height:16.5pt'>更新日期:</td>
+  <td colspan=34 style='mso-ignore:colspan'></td>
+ </tr>
+ <tr height=22 style='height:16.5pt'>
+  <td height=22 class=xl43 style='height:16.5pt' x:num="39980">2009/6/16</td>
+  <td colspan=34 style='mso-ignore:colspan'></td>
+ </tr>
+ <![if supportMisalignedColumns]>
+ <tr height=0 style='display:none'>
+  <td width=86 style='width:65pt'></td>
+  <td width=84 style='width:63pt'></td>
+  <td width=104 style='width:78pt'></td>
+  <td width=84 style='width:63pt'></td>
+  <td width=104 style='width:78pt'></td>
+  <td width=84 style='width:63pt'></td>
+  <td width=104 style='width:78pt'></td>
+  <td width=76 style='width:57pt'></td>
+  <td width=104 style='width:78pt'></td>
+  <td width=76 style='width:57pt'></td>
+  <td width=104 style='width:78pt'></td>
+  <td width=76 style='width:57pt'></td>
+  <td width=104 style='width:78pt'></td>
+  <td width=72 style='width:54pt'></td>
+  <td width=104 style='width:78pt'></td>
+  <td width=76 style='width:57pt'></td>
+  <td width=104 style='width:78pt'></td>
+  <td width=139 style='width:104pt'></td>
+  <td width=104 style='width:78pt'></td>
+  <td width=86 style='width:65pt'></td>
+  <td width=95 style='width:71pt'></td>
+  <td width=88 style='width:66pt'></td>
+  <td width=95 style='width:71pt'></td>
+  <td width=80 style='width:60pt'></td>
+  <td width=95 style='width:71pt'></td>
+  <td width=84 style='width:63pt'></td>
+  <td width=144 style='width:108pt'></td>
+  <td width=90 style='width:68pt'></td>
+  <td width=95 style='width:71pt'></td>
+  <td width=76 style='width:57pt'></td>
+  <td width=95 style='width:71pt'></td>
+  <td width=76 style='width:57pt'></td>
+  <td width=95 style='width:71pt'></td>
+  <td width=78 style='width:59pt'></td>
+  <td width=95 style='width:71pt'></td>
+ </tr>
+ <![endif]>
+</table>
+
+</body>
+
+</html>

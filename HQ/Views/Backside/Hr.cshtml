@@ -1,0 +1,41 @@
+﻿@{
+    Layout = "~/Views/Shared/_Backside.cshtml";
+    ViewBag.Title = "人資園地";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <script src="~/Scripts/Backside/Hr.js"></script>
+</head>
+<body>
+    <h2 style="text-align:center">人資園地</h2>
+    <div id="table">
+        <button class="btn" onclick="cInsert()">新增</button>
+        <table class="table">
+            <thead>
+                <tr class="title">
+                    <th>維護</th>
+                    <th>文章名稱</th>
+                    <th>主題區名稱</th>
+                    <th>優先權</th>
+                    <th>型態</th>
+                    <th>點閱率</th>
+                    <th>開始日期</th>
+                    <th>結束日期</th>
+                </tr>
+            </thead>
+            <tbody id="News_table"></tbody>
+        </table>
+    </div>
+    <div id="input">
+
+    </div>
+
+</body>
+</html>
+
+

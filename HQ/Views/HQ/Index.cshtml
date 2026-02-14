@@ -1,0 +1,792 @@
+﻿<div id="tab-demo">
+    <ul class="tab-title ul_style" style="margin: 8px 0px;">
+        <li>
+            <button class="topbtn" id="#tab01" onmouseout="MouseChangeColorOver(this)" onmousemove="MouseChangeColor(this)" onclick='tab_open("#tab01")'>首  頁</button>
+        </li>
+        <li>
+            <button class="topbtn" id="#tab02" onmouseout="MouseChangeColorOver(this)" onmousemove="MouseChangeColor(this)" onclick='tab_open("#tab02")'>公文公告</button>
+        </li>
+        <li>
+            <button class="topbtn" id="#tab03" onmouseout="MouseChangeColorOver(this)" onmousemove="MouseChangeColor(this)" onclick='tab_open("#tab03")'>資訊部公告</button>
+        </li>
+        <li>
+            <button class="topbtn" id="#tab04" onmouseout="MouseChangeColorOver(this)" onmousemove="MouseChangeColor(this)" onclick='tab_open("#tab04")'>線上報修</button>
+        </li>
+        <li id="tel">
+            <button class="topbtn" id="#tab05" onmouseout="MouseChangeColorOver(this)" onmousemove="MouseChangeColor(this)" onclick='tab_open("#tab05")'>電話速查表</button>
+        </li>
+        <li>
+            <button class="topbtn" id="#tab06" onmouseout="MouseChangeColorOver(this)" onmousemove="MouseChangeColor(this)" onclick='tab_open("#tab06")'>會議室申請</button>
+        </li>
+        <li>
+            <button class="topbtn" id="#tab07" onmouseout="MouseChangeColorOver(this)" onmousemove="MouseChangeColor(this)" onclick='tab_open("#tab07")'>員工資訊網</button>
+        </li>
+    </ul>
+    <div id="tab01" class="tab-inner" align="center">
+        <div class="div_left">
+            <div id="banner"></div>
+            <div>
+                <table width="587" height="39" border="0" cellpadding="0" cellspacing="0" background="images/line.gif">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <table width="570" height="28" border="0" align="center" cellpadding="0" cellspacing="0">
+                                    <tbody>
+                                        <tr>
+                                            <td class="fnt01">
+                                                <div style="height: 22px; width: 550px; position: relative; background-color: #fcf8f9">
+                                                    <div style="clip: rect(0px 550px 22px 0px); height: 22px; width: 550px; position: absolute; left: 0px; top: 0px " align=left>
+                                                        <ul class='marquee'>
+                                                            <li><img src="~/images/helpdesk.gif" />&nbsp;&nbsp;<a href="http://10.0.101.111/smartit5/" target="_blank">HELPDESK線上報修系統</a></li>
+                                                            <li><img src="~/images/inv.gif" />&nbsp;&nbsp;<a href="http://invoice.etax.nat.gov.tw/" target=_blank>財政部賦稅署統一發票中獎號碼單</a></li>
+                                                            <li><img src="~/images/mov.gif" />&nbsp;&nbsp;<a href="https://www.skcinemas.com/">熱映中</a>&nbsp;│&nbsp;<a href="https://www.skcinemas.com/films">新片預報</a></li>
+                                                        </ul>
+                                                        @*<div class="marquee" style="width: 550px; position: absolute; left: 0px;" align=left><img src="~/images/helpdesk.gif" />&nbsp;&nbsp;<a href="http://10.1.101.56/smartits/weblogin.aspx" target="_blank">HELPDESK線上報修系統</a></div>
+                                                    <div class="marquee" style="width: 550px; position: absolute; left: 0px; top: 25px;" align=left><img src="http://hq.skm.com.tw/images/inv.gif"/>&nbsp;&nbsp;<a href="http://invoice.etax.nat.gov.tw/" target=_blank>財政部賦稅署統一發票中獎號碼單</a></div>
+                                                    <div class="marquee" style="width: 550px; position: absolute; left: 0px; top: 50px;" align=left><img src="http://hq.skm.com.tw/images/mov.gif"/>&nbsp;&nbsp;<a href="http://hq.skm.com.tw/quickpage/default.asp?dept=mov&amp;page=1020#c1">熱映中</a>&nbsp;│&nbsp;<a href="http://hq.skm.com.tw/quickpage/default.asp?dept=mov&amp;page=1020#c2">新片預報</a></div>*@
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <table width="587" height="39" border="0" cellpadding="0" cellspacing="0">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <table width="570" height="28" border="0" align="center" cellpadding="0" cellspacing="0">
+                                    <tbody>
+                                        <tr>
+                                            <td width="540" height="59" background="/images/hr_title.png">&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td background="/images/hr_right.jpg">
+                                                <table width="540" border="0" cellpadding="0" cellspacing="0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td width="20"><div class='font13'>&nbsp;</div></td>
+                                                            <td width="127" height="36" background="/images/hr_title_m1.png"></td>
+                                                            <td width="127" height="36" background="/images/hr_title_m2.png"></td>
+                                                            <td width="127" height="36" background="/images/hr_title_m3.png"></td>
+                                                            <td width="127" height="36" background="/images/hr_title_m4.png"></td>                                                            
+                                                        </tr>
+                                                        <tr>
+                                                            <td width="20"><div class='font13'>&nbsp;</div></td>
+                                                            <td width="127" id="hr_home1" height="25" background="/images/hr_right_m1.png">&nbsp;</td>
+                                                            <td width="127" id="hr_home2" height="25" background="/images/hr_right_m2.png">&nbsp;</td>
+                                                            <td width="127" id="hr_home3" height="25" background="/images/hr_right_m3.png">&nbsp;</td>
+                                                            <td width="127" id="hr_home4" height="25" background="/images/hr_right_m4.png">&nbsp;</td>                                                            
+                                                        </tr>
+                                                        <tr>
+                                                            <td width="20"><div class='font13'>&nbsp;</div></td>
+                                                            @*<td width="127" background="/images/hr_bottom_m1.png"><div style='text-align:right;'><a href='http://10.90.101.33:8017/Other/HQ/Hr.aspx?title=1' target='_blank' class="font14">閱讀更多　</a></div></td>
+                                                              <td width="127" background="/images/hr_bottom_m2.png"><div style='text-align:right;'><a href='http://10.90.101.33:8017/Other/HQ/Hr.aspx?title=2' target='_blank' class="font14">閱讀更多　</a></div></td>
+                                                              <td width="127" background="/images/hr_bottom_m3.png"><div style='text-align:right;'><a href='http://10.90.101.33:8017/Other/HQ/Hr.aspx?title=3' target='_blank' class="font14">閱讀更多　</a></div></td>
+                                                              <td width="127" background="/images/hr_bottom_m4.png"><div style='text-align:right;'><a href='http://10.90.101.33:8017/Other/HQ/Hr.aspx?title=4' target='_blank' class="font14">閱讀更多　</a></div></td>*@
+                                                            <td width="127" background="/images/hr_bottom_m1.png"><div style='text-align:right;'><a href='http://ep.skm.com.tw/Other/HQ/Hr.aspx?title=1' target='_blank' class="font14">閱讀更多　</a></div></td>
+                                                            <td width="127" background="/images/hr_bottom_m2.png"><div style='text-align:right;'><a href='http://ep.skm.com.tw/Other/HQ/Hr.aspx?title=2' target='_blank' class="font14">閱讀更多　</a></div></td>
+                                                            <td width="127" background="/images/hr_bottom_m3.png"><div style='text-align:right;'><a href='http://ep.skm.com.tw/Other/HQ/Hr.aspx?title=3' target='_blank' class="font14">閱讀更多　</a></div></td>
+                                                            <td width="127" background="/images/hr_bottom_m4.png"><div style='text-align:right;'><a href='http://ep.skm.com.tw/Other/HQ/Hr.aspx?title=4' target='_blank' class="font14">閱讀更多　</a></div></td>
+                                                        </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="198" height="21" background="/images/hr_bottom.jpg">&nbsp;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="left1" style="width:295px">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td width="295" height="49" background="/images/d_main_r1_1.jpg">
+                        <table width="295" border="0" cellpadding="0">
+                            <tr>
+                                <th width="14" height="14" scope="col">&nbsp;</th>
+                                <td valign="baseline" scope="col"><span class="fnt09">:::</span><span class="fnt02"> 人資部-最新公告</span></td>
+                                <th width="13" scope="col">&nbsp;</th>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td background="/images/d_main_r1_2.jpg">
+                        <table width="295" border="0" cellpadding="0">
+                            <tr>
+                                <th width="14" scope="col">&nbsp;</th>
+                                <td scope="col">
+                                    <span class="fnt01" id="d_main_l1" style="width:260px;overflow:hidden;text-overflow:ellipsis;white-space: nowrap;">
+
+                                    </span>
+                                    <span align="right" class="fnt01"><a onclick="$('#tab02').show().siblings('.tab-inner').hide();">更多...</a></span>
+                                </td>
+                                <th width="13" scope="col">&nbsp;</th>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="295" height="21" background="/images/d_main_r1_3.jpg">&nbsp;</td>
+                </tr>
+            </table>
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td width="295" height="49" background="/images/d_main_r1_1.jpg">
+                        <table width="295" border="0" cellpadding="0">
+                            <tr>
+                                <th width="14" height="14" scope="col">&nbsp;</th>
+                                <td valign="baseline" scope="col"><span class="fnt09">:::</span><span class="fnt02"> 國際認證規範公告</span></td>
+                                <th width="13" scope="col">&nbsp;</th>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td background="/images/d_main_r1_2.jpg">
+                        <table width="295" border="0" cellpadding="0">
+                            <tr>
+                                <th width="14" scope="col">&nbsp;</th>
+                                <td scope="col">
+                                    <span class="fnt01" id="d_main_l2" style="width:260px;overflow:hidden;text-overflow:ellipsis;white-space: nowrap;">
+                                        <a href="http://hq.skm.com.tw/QuickPage/docs/safe/新光三越文件管理規則.pdf" target="_blank">◎ 新光三越 文件管理規則<br></a>
+                                        <a href="http://hq.skm.com.tw/InformationSecurityTerms.html" target="_blank">◎ 資訊安全合約條文<br></a>
+                                        <a href="http://hq.skm.com.tw/security.html" target="_blank">◎ 資訊安全ISO 27001暨個資隱私資訊ISO 27701</BR>　 管理系統<br></a>
+                                        <a href="http://hq.skm.com.tw/security_10002.html" target="_blank">◎ ISO 10002 客戶申訴處理管理系統<br></a>
+                                        <a href="http://hq.skm.com.tw/security_45001.html" target="_blank">◎ ISO 45001 職業衛生安全管理系統<br></a>
+                                        <a href="http://hq.skm.com.tw/security_50001.html" target="_blank">◎ ISO 50001 能源管理系統<br></a>
+                                        <a href="http://hq.skm.com.tw/security_14001.html" target="_blank">◎ ISO 14001 環境管理系統<br></a>
+                                    </span>
+                                    @*<span align="right" class="fnt01"><a onclick="$('#tab02').show().siblings('.tab-inner').hide();">更多...</a></span>*@
+</td>
+                                    <th width="13" scope="col">&nbsp;</th>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="295" height="21" background="/images/d_main_r1_3.jpg">&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="left1" style="width:295px ">
+                <table border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="295" height="49" background="/images/d_main_r1_1.jpg">
+                            <table width="295" border="0" cellpadding="0">
+                                <tr>
+                                    <th width="14" height="14" scope="col">&nbsp;</th>
+                                    <td valign="baseline" scope="col"><span class="fnt09">:::</span><span class="fnt02"> 資訊部-最新公告</span></td>
+                                    <th width="13" scope="col">&nbsp;</th>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td background="/images/d_main_r1_2.jpg">
+                            <table width="295" border="0" cellpadding="0">
+                                <tr>
+                                    <th width="14" scope="col">&nbsp;</th>
+                                    <td width="260" scope="col">
+                                        <span class="fnt01" id="d_main_r1" style="overflow:hidden;width:260px;text-overflow:ellipsis;white-space: nowrap;">
+
+                                        </span>
+                                        <span align="right" class="fnt01"><a onclick="$('#tab03').show().siblings('.tab-inner').hide();">更多...</a></span>
+                                    </td>
+                                    <th width="13" scope="col">&nbsp;</th>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="295" height="21" background="/images/d_main_r1_3.jpg">&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="right">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td width="198" height="59" background="/images/safe.png">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td background="/images/right02.jpg">
+                        <table width="198" border="0" cellpadding="0" cellspacing="0">
+
+                            <tr>
+                                <td height="25">
+                                    <table width="180" border="0" cellpadding="1" cellspacing="1" id="safe_stop"></table>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td width="198" height="21" background="/images/right04.jpg">&nbsp;</td>
+                </tr>
+            </table>
+
+
+
+            <table width="198" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <td><img src="/images/r2_01.gif" style=" width:10px ;height:36px" alt="" /></td>
+                    <td colspan="2"><img src="/images/r2_02.gif" style="width:99px; height:36px" alt="" /></td>
+                    <td colspan="2" style="background-image:url('/images/r2_03.gif');width:99px">&nbsp;</td>
+                    <td><img src="/images/r2_05.gif" style=" width:10px; height:36px;" alt="" /></td>
+                </tr>
+                <tr>
+                    <td background="/images/r2_06.gif">&nbsp;</td>
+                    <td colspan="4">
+                        <table width="178" border="0" cellpadding="0" cellspacing="0">
+
+                            <tr>
+                                <td height="25" id="web_connect"></td>
+                            </tr>
+
+                        </table>
+                    </td>
+                    <td background="/images/r2_08.gif">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="background-image:url('/images/r2_11.gif');width:10px; height:3px"></td>
+                    <td colspan="4" style="background-image:url('/images/r2_12.gif'); height:3px"></td>
+                    <td style="background-image:url('/images/r2_14.gif');width:10px; height:3px"></td>
+                </tr>
+
+            </table>
+
+        </div>
+    </div>
+    <div id="tab02" class="tab-inner">
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td width="11" height="36" background="/images/function2_1_1.jpg"></td>
+                <td width="87" height="36" background="/images/function2_1_2.jpg"></td>
+                <td width="674" height="36" background="/images/function2_1_4.jpg"></td>
+                <td width="8" height="36" background="/images/function2_1_5.jpg"></td>
+            </tr>
+            <tr>
+                <td widtd="11" background="/images/function2_2_1.jpg"></td>
+                <td colspan="2">
+                    <table border="0" cellpadding="1" class="fnt09">
+
+                        <tr id="hr_content"></tr>
+                    </table>
+                </td>
+                <td widtd="8" background="/images/function2_2_3.jpg"></td>
+            </tr>
+            <tr>
+                <td widtd="11" height="13" background="/images/function2_4_1.jpg"></td>
+                <td widtd="561" height="13" colspan="2" background="/images/function2_4_3.jpg"></td>
+                <td widtd="8" height="13" background="/images/function2_4_4.jpg"></td>
+            </tr>
+
+        </table>
+
+    </div>
+    <div id="tab03" class="tab-inner">
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td width="11" height="36" background="/images/function2_1_1.jpg"></td>
+                <td width="87" height="36" background="/images/function2_1_2.jpg"></td>
+                <td width="674" height="36" background="/images/function2_1_4.jpg"></td>
+                <td width="8" height="36" background="/images/function2_1_5.jpg"></td>
+            </tr>
+            <tr>
+                <td widtd="11" background="/images/function2_2_1.jpg"></td>
+                <td colspan="2">
+                    <table border="0" cellpadding="1" class="fnt09">
+
+                        <tr>
+                            <td scope="col" id="it_content"></td>
+                        </tr>
+                    </table>
+                </td>
+                <td widtd="8" background="/images/function2_2_3.jpg"></td>
+            </tr>
+            <tr>
+                <td widtd="11" height="13" background="/images/function2_4_1.jpg"></td>
+                <td widtd="561" height="13" colspan="2" background="/images/function2_4_3.jpg"></td>
+                <td widtd="8" height="13" background="/images/function2_4_4.jpg"></td>
+            </tr>
+
+        </table>
+
+    </div>
+    <div id="tab05" class="tab-inner">
+        <div border="0">
+            <table width="780" border="0" cellpadding="0">
+                <tr>
+                    <th width="260" valign="top" scope="col">
+                        <p class="style1">
+                            <a onclick='window.open(window.location.origin+ "/Areas/tel/system.htm")' onmouseout="MM_swapImgRestore()" onmousemove="MM_swapimage('icon2','','/images/phone_icon2_2.gif',1)">
+                                <img src="/images/phone_icon_2.gif" name="icon2" width="180" height="26" border="0" id="icon2" />
+                            </a>
+                            <a onclick='window.open(window.location.origin+ "/Areas/tel/fax.htm")' onmouseout="MM_swapImgRestore()" onmousemove="MM_swapimage('icon3','','/images/phone_icon2_4.gif',1)">
+                                <img src="/images/phone_icon_4.gif" name="icon3" width="180" height="26" border="0" id="icon3" />
+                            </a>
+                            <a onclick='window.open(window.location.origin+ "/Areas/tel/restaurant.htm")' onmouseout="MM_swapImgRestore()" onmousemove="MM_swapimage('icon4','','/images/phone_icon2_3.gif',1)">
+                                <img src="/images/phone_icon_3.gif" name="icon4" width="180" height="26" border="0" id="icon4" />
+                            </a>
+                            <img src="/images/mail.gif" width="210" height="40" border="0" usemap="#Map2">
+                        </p>
+                        <p class="style1">
+                            <img src="/images/taiwan_map1.jpg" name="image1" width="250" height="452" border="0" align="middle" usemap="#Map" id="image1" />
+                            <map name="Map" id="Map">
+                                <area shape="poly" coords="166,23" href="#" />
+                                <area shape="poly" coords="128,18" href="#" />
+                                <area shape="poly" coords="127,19" href="#" />
+                                <area shape="rect" coords="71,296,94,310" onclick="onSearchTel_map('高雄')" target="_self" onmousemove="MM_showMenu(window.mm_menu_0216143034_0,730,550,null,'image1')" />
+                                <area shape="poly" coords="279,75,273,103,251,311,278,146" href="#" />
+                                <area shape="rect" coords="31,277,55,289" onclick="onSearchTel_map('台南')" onmousemove="MM_showMenu(window.mm_menu_0113150930_0,700,520,null,'image1')" />
+                                <area shape="rect" coords="109,138,131,154" onclick="onSearchTel_map('台中')" target="_self" onmousemove="MM_showMenu(window.mm_menu_0216142031_0,770,405,null,'image1')" />
+                                <!--<area shape="rect" coords="130,75,153,88" onclick="onSearchTel_map('新竹')" target="_self" onmousemove="MM_showMenu(window.mm_menu_0216141757_0,800,340,null,'image1')" />-->
+                                <area shape="rect" coords="135,43,162,56" onclick="onSearchTel_map('桃園')" target="_self" onmousemove="MM_showMenu(window.mm_menu_0216140951_0,800,310,null,'image1')" />
+                                <area shape="poly" coords="153,15,153,28,188,28,188,15" onclick="onSearchTel_map('台北')" target="_self" onmousemove="MM_showMenu(window.mm_menu_0113145304_0,850,290,null,'image1')" />
+                                <area shape="circle" coords="386,235,0" href="#" />
+                                <area shape="rect" coords="301,149,303,151" href="#" />
+                                <area shape="rect" coords="58,233,90,250"  onclick="onSearchTel_map('嘉義')" target="_self" onmousemove="MM_showMenu(window.mm_menu_0623152604_0,710,500,null,'image1')">
+                            </map>
+                        </p>
+                    </th>
+                    <th width="500" valign="top" scope="col">
+                        <table width="500" border="0" align="left">
+                            <tr>
+                                <td width="500" class="style1">
+                                    <form class="form-horizontal">
+
+                                        <table style="width:100%" border="1" id="tbCust">
+                                            <tr>
+                                                <th>名稱</th>
+                                                <th id="address">地址</th>
+                                                <th>電話</th>
+                                            </tr>
+                                        </table>
+
+                                    </form>
+                                </td>
+                            </tr>
+                        </table>
+                    </th>
+                </tr>
+            </table>
+            <map name="Map2">
+                <area shape="rect" coords="0,0,208,41" onClick="MM_showHideLayers('Layer1','Map2','show')">
+
+            </map>
+
+            <div id="Layer1" onClick="MM_showHideLayers('Layer1','Map2','show')">
+                <table width="404" height="125" border="1" align="center" bordercolor="#000000" bgcolor="#FFFFCC">
+                    <tr>
+                        <td width="404">
+                            <p class="style6">找不到自己的分機嗎?</p>
+                            <p class="style6">還是分機資料有誤呢?</p>
+                            <p class="style6">請通報<span class="style7">電話速查表更新人員</span>哦!</p>
+                            <table width="404" border="1" cellspacing="0" cellpadding="0">
+                                <tr class="style8">
+                                    <td width="400">
+                                        <table width="400" border="1" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <th width="120" bgcolor="#FF9900" class="fnt01" scope="col"><span>店別</span></th>
+                                                <th width="150" bgcolor="#FF9900" class="fnt01" scope="col"><span>負責人</span></th>
+                                                <th width="38" bgcolor="#FF9900" class="fnt01" scope="col"><div align="center"><span>分機</span></div></th>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>總公司</span></th>
+                                                <td class="fnt01">
+                                                    <span>
+                                                        總務部—盧毅杰
+                                                    </span>
+                                                </td>
+                                                <td class="fnt01">
+                                                    <div align="center">
+                                                        <span>
+                                                            3664
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>台北南西店</span></th>
+                                                <td class="fnt01">
+                                                    <span>
+                                                        台北南西店　店舖管理—曾崇峯
+                                                    </span>
+                                                </td>
+                                                <td class="fnt01"><div align="center"><span>3021</span></div></td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>台北站前店</span></th>
+                                                <td class="fnt01"><span>台北站前店　店舖管理—許質杭 </span></td>
+                                                <td class="fnt01"><div align="center"><span>4868</span></div></td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>台北信義新天地A11</span></th>
+                                                <td class="fnt01">
+                                                    <span>
+                                                        信義A11店　店舖管理—王郁傑<br />
+                                                        信義A11店　店舖管理—蔣玉玲<br />
+                                                        信義A11店　店舖管理—呂福修<br />
+                                                        信義A11店　店舖管理—張家豪<br />
+                                                        信義A11店　店舖管理—李宜掙
+
+                                                    </span>
+                                                </td>
+                                                <td class="fnt01">
+                                                    <div align="center">
+                                                        <span>
+                                                            2345<br />2312<br />2081<br />2082<br />2083
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>台北信義新天地A8</span></th>
+                                                <td class="fnt01">
+                                                    <span>
+                                                        信義A8店　店舖管理—曾靜宜
+                                                    </span>
+                                                </td>
+                                                <td class="fnt01">
+                                                    <div align="center">
+                                                        <span>
+                                                            6879
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>台北信義新天地A9</span></th>
+                                                <td class="fnt01">
+                                                    <span>
+                                                        信義A9店　店舖管理—呂敏超
+                                                    </span>
+                                                </td>
+                                                <td class="fnt01">
+                                                    <div align="center">
+                                                        <span>
+                                                            7514
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>台北信義新天地A4</span></th>
+                                                <td class="fnt01">
+                                                    <span>
+                                                        信義A4店　店長室—李秀津<br />
+                                                        信義A4店　店長室—陳俐穎
+                                                    </span>
+                                                </td>
+                                                <td class="fnt01">
+                                                    <div align="center">
+                                                        <span>
+                                                            2661<br />2723
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>台北忠孝店</span></th>
+                                                <td class="fnt01">
+                                                    <span>
+                                                        台北忠孝店　店舖管理—丁冠維
+                                                    </span>
+                                                </td>
+                                                <td class="fnt01">
+                                                    <div align="center">
+                                                        <span>
+                                                            6718
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>台北天母店</span></th>
+                                                <td class="fnt01">
+                                                    <span>
+                                                        台北天母店　人事—鄭柔潔<br />
+                                                        台北天母店　店舖管理—伍加達
+                                                    </span>
+                                                </td>
+                                                <td class="fnt01">
+                                                    <div align="center">
+                                                        <span>
+                                                            3027<br />
+                                                            3021
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>桃園站前店</span></th>
+                                                <td class="fnt01"><span>桃園站前店　店舖管理—陳志青</span></td>
+                                                <td class="fnt01"><div align="center" class="style8"><span class="style8">2712</span></div></td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>台中中港店</span></th>
+                                                <td class="fnt01"><span>台中中港店　店舖管理—李鎰淞</span></td>
+                                                <td class="fnt01"><div align="center" class="style8"><span class="style8">6952</span></div></td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>嘉義垂楊店</span></th>
+                                                <td class="fnt01"><span>嘉義垂楊店　店舖管理—蔡佳潓</span></td>
+                                                <td class="fnt01"><div align="center" class="style8"><span class="style8">2362</span></div></td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>台南中山店</span></th>
+                                                <td class="fnt01"><span>台南中山店　店舖管理—楊登凱</span></td>
+                                                <td class="fnt01"><div align="center" class="style8"><span class="style8">6089</span></div></td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>台南西門店</span></th>
+                                                <td class="fnt01"><span>台南西門店　店舖管理—鄭翔安</span></td>
+                                                <td class="fnt01"><div align="center" class="style8"><span class="style8">2847</span></div></td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>高雄三多店</span></th>
+                                                <td class="fnt01"><span>
+                                                    高雄三多店　店舖管理—鄒明豐<br />
+                                                    高雄三多店　店舖管理—呂啟弘<br />
+                                                    高雄三多店　店舖管理—林宜玫<br />
+                                                    高雄三多店　店舖管理—陳冠汶<br />
+                                                    高雄三多店　店舖管理—楊志釧<br />
+                                                    高雄三多店　店舖管理—蔡伯宗
+                                            </span></td>
+                                                <td class="fnt01"><div align="center" class="style8"><span class="style8">7080<br />7078<br />7090<br />7095<br />7021<br />7025</span></div></td>
+                                            </tr>
+                                            <tr>
+                                                <th bgcolor="#FFCC33" class="fnt01" scope="row"><span>高雄左營店</span></th>
+                                                <td class="fnt01">
+                                                    <span>
+                                                        高雄左營店　店舖管理—許原彰<br>
+                                                        高雄左營店　店舖管理—黃足維<br>
+                                                        高雄左營店　店舖管理—張喬翔
+                                                    </span>
+                                                </td>
+                                                <td class="fnt01">
+                                                    <div align="center" class="style8">
+                                                        <span class="style8">
+                                                            8899<br/>
+                                                            8883<br />
+                                                            5651
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@*<title>CKEditor</title>
+<script src="https://cdn.ckeditor.com/4.12.1/standard/ckeditor.js"></script>
+
+<textarea name="editor1"></textarea>
+<script>
+    CKEDITOR.replace('editor1');
+</script>*@
+<script type="text/javascript" src="~/Scripts/jquery.marquee.min.js"></script>
+<script src="~/Scripts/Hq/Index.js"></script>
+<style type="text/css">
+    .style1 {
+        color: #000000
+    }
+
+    .style3 {
+        font-size: 10pt;
+        color: #333;
+    }
+
+    .font8 {
+        font-size: 8pt;
+        color: #333;
+    }
+
+    .font16 {
+        font-size: 12pt;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .font10 {
+        font-size: 8pt;
+        color: #333;
+        vertical-align: top;
+    }
+
+    .font13 {
+        font-size: 10pt;
+        color: #333;
+        vertical-align: top;
+    }
+
+    .font14 {
+        font-size: 10pt;
+        color: #333;
+        font-weight: bold;
+    }
+
+    #tab-demo {
+        width: 768px;
+    }
+
+        #tab-demo > ul {
+            display: block;
+            margin: 0;
+            list-style: none;
+        }
+
+    .tab-title {
+        list-style: none;
+        text-align: left;
+        padding-left: 0px;
+    }
+
+    #tab-demo > ul > li {
+        display: inline-block;
+        /*border: 1px solid #BCBCBC;*/
+        background: #cdcdcd;
+        padding: 0 15px;
+        box-sizing: border-box;
+        text-align: center;
+        margin: 14px -1px;
+    }
+
+        #tab-demo > ul > li a {
+            color: #000;
+            text-decoration: none;
+        }
+
+
+
+    #tab-demo > .tab-inner {
+        clear: both;
+        color: #000;
+        border: 0px #BCBCBC solid;
+    }
+
+    .tab-inner {
+        width: 798px;
+    }
+
+    table, th, td {
+        border-collapse: collapse;
+    }
+
+    #Layer1 {
+        position: absolute;
+        left: 213px;
+        top: 155px;
+        width: 405px;
+        height: 129px;
+        background-color: white;
+        z-index: 1;
+        visibility: hidden;
+    }
+
+
+    .style1 {
+        color: #000000
+    }
+
+    .style6 {
+        color: #000000;
+        font-weight: bold;
+        font-size: 10pt;
+    }
+
+    .style7 {
+        color: #FF0000
+    }
+
+    .style8 {
+        color: #333333;
+        background-color: wheat;
+    }
+
+    .left1 {
+        position: relative;
+        min-height: 1px;
+        padding-right: 15px;
+        padding-left: 15px;
+        float: left;
+        padding-left: 0px;
+    }
+
+    .right {
+        position: relative;
+        min-height: 1px;
+        padding-right: 15px;
+        padding-left: 15px;
+        float: left;
+        padding-left: 0px;
+        width: 195px;
+    }
+
+    .topbtn {
+        white-space: nowrap;
+        border-radius: 8px;
+        top: 17px;
+        width: 108px;
+        border: 0.5px #FFA4A2 solid;
+        height: 35px;
+        background: white;
+        margin: -15px;
+        font-size: 10pt;
+        color:#333
+    }
+
+    .ul_style {
+        background-color: #FFD5D5;
+        border-radius: 13px;
+        box-shadow: rgb(102, 102, 102) 6px 1px 4px;
+        text-align: center;
+        width: 780px;
+    }
+
+    .div_left {
+        position: relative;
+        min-height: 1px;
+        float: left;
+        padding-left: 0px;
+    }
+
+    .active {
+        background-color: #FFD5D5;
+    }
+    .banner_cls{
+        margin: 0px -1px;
+    }
+    .marquee {
+        width: 100%;
+        overflow: hidden;
+        padding: 5px;
+    }
+
+    ul.marquee li {
+        padding: 5px 2px;
+    }
+</style>

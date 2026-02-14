@@ -1,0 +1,72 @@
+﻿@model HQBackSite.Models.ParaModel
+@{
+    Layout = null;
+}
+<div class="modal-body">
+    @using (Html.BeginForm("IndexAdd", "Menu", FormMethod.Post, new { id = "addForm" }))
+    {
+        <div class="mb-3">
+            <label class="form-label">類型<sup class="text-danger">*</sup></label>
+            <div class="d-flex gap-3">
+                <div class="form-check">
+                    @Html.RadioButtonFor(m => m.type_name, "部門網頁", new { @class = "form-check-input", id = "type_dept", @checked = "checked" })
+                    <label class="form-check-label" for="type_dept">部門網頁</label>
+                </div>
+                <div class="form-check">
+                    @Html.RadioButtonFor(m => m.type_name, "分店網頁", new { @class = "form-check-input", id = "type_branch" })
+                    <label class="form-check-label" for="type_branch">分店網頁</label>
+                </div>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="code">部門編號</label>
+            @Html.TextBoxFor(m => m.code, new { @class = "form-control", id = "code", maxlength = "50", placeholder = "" })
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="code_name">部門代號</label>
+            @Html.TextBoxFor(m => m.code_name, new { @class = "form-control", id = "code_name", maxlength = "50", placeholder = "" })
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="data1">部門名稱</label>
+            @Html.TextBoxFor(m => m.data1, new { @class = "form-control", id = "data1", maxlength = "50", placeholder = "" })
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="data1">部門英文名稱</label>
+            @Html.TextBoxFor(m => m.data2, new { @class = "form-control", id = "data2", maxlength = "50", placeholder = "" })
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="data1">風格</label>
+            <select class="form-select" id="data6" name="data6">
+                <option value="">請選擇</option>
+                <option value="blue" @(Model.data6 == "blue" ? "selected" : "")>藍色</option>
+                <option value="black" @(Model.data6 == "black" ? "selected" : "")>黑色</option>
+                <option value="green" @(Model.data6 == "green" ? "selected" : "")>綠色</option>
+                <option value="red" @(Model.data6 == "red" ? "selected" : "")>紅色</option>
+                <option value="skin" @(Model.data6 == "skin" ? "selected" : "")>膚色</option>
+                <option value="violet" @(Model.data6 == "violet" ? "selected" : "")>紫色</option>
+            </select>
+        </div>
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+    <button type="button" class="btn btn-primary" onclick="submitAddForm()">確定</button>
+</div>
+<script>
+    async function submitAddForm() {
+        var form = document.getElementById('addForm');
+        if (form) {
+            var result = await libs.api.post('/Menu/IndexAdd', {
+                data: Object.fromEntries(new FormData(form)),
+                loadding: true
+            });
+
+            libs.result(result, () => {
+                query();
+                libs.modal.closeModal();
+            });
+        }
+    }
+</script>
+
+     

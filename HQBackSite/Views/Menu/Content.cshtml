@@ -1,0 +1,68 @@
+﻿@model HQBackSite.Models.ContentModel
+@{
+    ViewBag.Title = "內容設定";
+    ViewBag.CurrentModule = "content";
+
+    var paras = (ViewData["Paras"] as List<HQBackSite.Models.ParaModel>) ?? new List<HQBackSite.Models.ParaModel>();
+}
+@section Scripts {
+    <script>
+        function query() {
+            $("#queryForm").submit();
+        }
+
+        function lnkQuery() {
+            document.getElementById('PageNo').value = 1;
+            query();
+        }
+
+        lnkQuery();
+    </script>
+}
+<div>
+    @using (Ajax.BeginForm("ContentQuery", null, new AjaxOptions { UpdateTargetId = "queryResult" }, new { id = "queryForm" }))
+    {
+        @Html.HiddenFor(m => m.PageNo)
+        <div class="search-section">
+            <div class="search-row">
+                <div class="search-field">
+                    <label class="search-label">部門</label>
+                    <select class="form-select" id="dept" name="dept">
+                        <option value="">請選擇選單部門</option>
+                        @foreach (var u in paras)
+                        {
+                            <option value="@u.code_name">
+                                @u.data1 ( @u.code_name )
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="search-field">
+                    <label class="search-label">標題</label>
+                    <div class="search-input-wrapper">
+                        @Html.TextBoxFor(m => m.subject, new { @class = "form-control", id = "subject", placeholder = "請輸入名稱", onblur = "this.value = this.value.trim();" })
+                    </div>
+                </div>
+                <div class="search-field">
+                    <label class="search-label">顯示</label>
+                    <div class="search-input-wrapper">
+                        <select class="form-select" id="is_show" name="is_show">
+                            <option value="">全部</option>
+                            <option value="Y" @(Model.is_show == "Y" ? "selected" : "")>Y</option>
+                            <option value="N" @(Model.is_show == "N" ? "selected" : "")>N</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="search-actions">
+                <div class="search-actions-left"></div>
+                <div class="search-actions-right">
+                    <a href="#" class="btn btn-outline-secondary" onclick="libs.reload(); return false;">清除</a>
+                    <a href="#" class="btn btn-primary" onclick="lnkQuery()">查詢</a>
+                    <button type="button" class="btn btn-primary" onclick="libs.modal.openModalL('新增', '/Menu/ContentAdd');">新增內容</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div id="queryResult"></div>

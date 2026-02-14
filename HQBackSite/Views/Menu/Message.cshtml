@@ -1,0 +1,69 @@
+﻿@model HQBackSite.Models.NewsModel
+@{
+    ViewBag.Title = "訊息設定";
+    ViewBag.CurrentModule = "message";
+}
+@section Scripts {
+    <script>
+        function query() {
+            $("#queryForm").submit();
+        }
+
+        function lnkQuery() {
+            document.getElementById('PageNo').value = 1;
+            query();
+        }
+
+        lnkQuery();
+    </script>
+}
+<div>
+    @using (Ajax.BeginForm("MessageQuery", null, new AjaxOptions { UpdateTargetId = "queryResult" }, new { id = "queryForm" }))
+    {
+        @Html.HiddenFor(m => m.PageNo)
+        <div class="search-section">
+            <div class="search-row">
+                <div class="search-field">
+                    <label class="search-label">訊息類別</label>
+                    <div class="search-input-wrapper">
+                        <select class="form-select" id="dept" name="dept">
+                            <option value="">全部</option>
+                            <option value="案例分享">案例分享</option>
+                            <option value="最新公告">最新公告</option>
+                            <option value="安全新知">安全新知</option>
+                            <option value="政策推動">政策推動</option>
+                            <option value="熱門話題">熱門話題</option>
+                            <option value="職場生活">職場生活</option>
+                            <option value="快樂員購">快樂員購</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="search-field">
+                    <label class="search-label">訊息名稱</label>
+                    <div class="search-input-wrapper">
+                        @Html.TextBoxFor(m => m.background, new { @class = "form-control", id = "data1", placeholder = "請輸入標題", onblur = "this.value = this.value.trim();" })
+                    </div>
+                </div>
+                <div class="search-field">
+                    <label class="search-label">上下線狀態</label>
+                    <div class="search-input-wrapper">
+                        <select class="form-select" id="status" name="status">
+                            <option value="">全部</option>
+                            <option value="上線">上線</option>
+                            <option value="下線">下線</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="search-actions">
+                <div class="search-actions-left"></div>
+                <div class="search-actions-right">
+                    <a href="#" class="btn btn-outline-secondary" onclick="libs.reload(); return false;">清除</a>
+                    <a href="#" class="btn btn-primary" onclick="lnkQuery()">查詢</a>
+                    <button type="button" class="btn btn-primary" onclick="libs.modal.openModalL('新增', '/Menu/MessageAdd');">新增訊息</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div id="queryResult"></div>

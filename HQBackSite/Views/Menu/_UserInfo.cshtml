@@ -1,0 +1,11 @@
+@model HQBackSite.Models.UserModel
+
+@if (Model != null)
+{
+    <span class="me-2 small fw-semibold d-none d-sm-inline">
+        @(Model.ORGAN_ID ?? "") @(Model.DEPARTMENT ?? "") @(Model.EMPLOYEE_ID ?? "") @(Model.LOCAL_NAME ?? "")
+    </span>
+    <span class="me-2 small fw-semibold d-sm-none">
+        @(Model.EMPLOYEE_ID ?? "") @(Model.LOCAL_NAME ?? "")
+    </span>
+}

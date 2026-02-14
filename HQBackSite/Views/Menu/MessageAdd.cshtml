@@ -1,0 +1,142 @@
+﻿@model HQBackSite.Models.NewsModel
+@{
+    Layout = null;
+}
+<div class="modal-body p-2">
+    @using (Html.BeginForm("MessageAdd", "Menu", FormMethod.Post, new { id = "addForm" }))
+    {
+        <div class="row mb-1">
+            <div class="col-md-6">
+                <label class="form-label" for="dept">訊息類別</label>
+                <select class="form-select" id="dept" name="dept">
+                    <option value="">請選擇</option>
+                    <option value="案例分享" @(Model.dept == "案例分享" ? "selected" : "")>案例分享</option>
+                    <option value="最新公告" @(Model.dept == "最新公告" ? "selected" : "")>最新公告</option>
+                    <option value="安全新知" @(Model.dept == "安全新知" ? "selected" : "")>安全新知</option>
+                    <option value="政策推動" @(Model.dept == "政策推動" ? "selected" : "")>政策推動</option>
+                    <option value="熱門話題" @(Model.dept == "熱門話題" ? "selected" : "")>熱門話題</option>
+                    <option value="職場生活" @(Model.dept == "職場生活" ? "selected" : "")>職場生活</option>
+                    <option value="快樂員購" @(Model.dept == "快樂員購" ? "selected" : "")>快樂員購</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="priority">優先順序</label>
+                @Html.TextBoxFor(m => m.priority, new { @class = "form-control", id = "priority", name = "priority", type = "number", placeholder = "數字越小越優先", value = Model.priority == 0 ? "" : Model.priority.ToString() })
+            </div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-md-12">
+                <label class="form-label" for="background">標題</label>
+                @Html.TextBoxFor(m => m.background, new { @class = "form-control", id = "background", name = "background", maxlength = "200", placeholder = "請輸入標題" })
+            </div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-md-6">
+                <label class="form-label" for="start_date">起日</label>
+                @Html.TextBoxFor(m => m.start_date, new { @class = "form-control", id = "start_date", name = "start_date", type = "date", placeholder = "請選擇起日" })
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="end_date">訖日</label>
+                @Html.TextBoxFor(m => m.end_date, new { @class = "form-control", id = "end_date", name = "end_date", type = "date", placeholder = "請選擇訖日" })
+            </div>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-12">
+                <label class="form-label" for="descpt">
+                    內容
+                    <small class="text-muted">（可上傳圖片或檔案自動插入內容）</small>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="uploadImageBtn" onclick="uploadImageForContent()">
+                        <i class="fas fa-image"></i> 上傳圖片
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="uploadFileBtn" onclick="uploadFileForContent()">
+                        <i class="fas fa-file"></i> 上傳檔案
+                    </button>
+                </label>
+                <div class="mb-2">
+                    <input type="file" id="imageFileInput" style="display: none;" accept="image/*" onchange="handleImageUpload(event)">
+                    <input type="file" id="contentFileInput" style="display: none;" accept="*/*" onchange="handleContentFileUpload(event)">
+                </div>
+                @Html.TextAreaFor(m => m.descpt, new { @class = "form-control", id = "descpt", name = "descpt", placeholder = "" })
+            </div>
+        </div>
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+    <button type="button" class="btn btn-primary" onclick="submitAddForm()">確定</button>
+</div>
+<script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+<script src="~/Scripts/lib.ckeditor.js"></script>
+<script src="~/Scripts/content.js"></script>
+<script>
+    (function() {
+        function initEditor() {
+            if (typeof window.initCKEditor === 'function' && typeof CKEDITOR !== 'undefined') {
+                var textarea = document.getElementById('descpt');
+                if (textarea) {
+                    window.initCKEditor('descpt');
+                } else {
+                    setTimeout(initEditor, 100);
+                }
+            } else {
+                setTimeout(initEditor, 100);
+            }
+        }
+        
+        if (window.jQuery) {
+            window.jQuery(document).on('shown.bs.modal', function() {
+                setTimeout(function() {
+                    var textarea = document.getElementById('descpt');
+                    if (textarea && (!ckEditor || currentTextareaId !== 'descpt')) {
+                        if (ckEditor) {
+                            try { ckEditor.destroy(); } catch (e) {}
+                            ckEditor = null;
+                        }
+                        if (typeof editorInitialized !== 'undefined') editorInitialized = false;
+                        window.initCKEditor('descpt');
+                    }
+                }, 100);
+            });
+        }
+        
+        setTimeout(initEditor, 200);
+    })();
+
+    async function submitAddForm() {
+        var form = document.getElementById('addForm');
+        if (!form) {
+            alert('表單不存在');
+            return;
+        }
+
+        var descptTextarea = document.getElementById('descpt');
+        var htmlContent = '';
+
+        if (typeof ckEditor !== 'undefined' && ckEditor) {
+            htmlContent = ckEditor.getData();
+            if (descptTextarea) {
+                descptTextarea.value = htmlContent;
+            }
+        } else if (descptTextarea) {
+            htmlContent = descptTextarea.value;
+        }
+
+        try {
+            var result = await libs.api.post('/Menu/MessageAdd', {
+                data: Object.fromEntries(new FormData(form)),
+                loadding: true
+            });
+
+            libs.result(result, function () {
+                if (typeof query === 'function') {
+                    query();
+                }
+                libs.modal.closeModal();
+            });
+        } catch (error) {
+            console.error('Submit form error:', error);
+            alert('提交失敗：' + (error.message || '未知錯誤'));
+        }
+    }
+</script>

@@ -1,0 +1,23 @@
+﻿@model HQ.Controllers.LoginViewModel
+@{
+    ViewBag.Title = "登入";
+    Layout = "~/Views/Shared/_Login.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    <h1>HQ後台維護</h1>
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(m => m.UserName)
+        @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" ,@style= "display: initial;" })
+        @Html.ValidationMessageFor(m => m.UserName)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Password)
+        @Html.PasswordFor(x => x.Password, new { @class = "form-control", @style = "display: initial;" })
+        @Html.ValidationMessageFor(m => m.Password)
+    </div>
+    <button type="submit" class="btn btn-primary block full-width m-b">登入</button>
+}

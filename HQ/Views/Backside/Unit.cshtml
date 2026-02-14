@@ -1,0 +1,48 @@
+﻿@{
+    Layout = "~/Views/Shared/_Backside.cshtml";
+    ViewBag.Title = "單元維護";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    <script src="~/Scripts/Backside/Unit.js"></script>
+</head>
+<body>
+    <h2 style="text-align:center">單元維護</h2>
+    <div id="table">
+        <button class="btn" onclick="cInsert()">新增</button>
+        <select id="DeptSelect">
+            <option value=null>請選擇</option>
+        </select>
+        <select id="PageSelect">
+            <option value=null>請選擇</option>
+        </select>
+        <select id="SubtypeSelect">
+            <option value=null>請選擇</option>
+        </select>
+        <table class="table">
+            <thead>
+                <tr class="title">
+                    <th>維護</th>
+                    <th>網頁編號</th>
+                    <th>部門</th>
+                    <th>單元類型</th>
+                    <th>單元標題</th>
+                    <th>網頁風格</th>
+                    <th>網站連結</th>
+                    <th>顯示</th>
+                </tr>
+            </thead>
+            <tbody id="Unit_table"></tbody>
+        </table>
+    </div>
+    <div id="input">
+
+    </div>
+
+</body>
+</html>

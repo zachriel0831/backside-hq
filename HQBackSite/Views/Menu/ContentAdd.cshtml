@@ -1,0 +1,205 @@
+﻿@model HQBackSite.Models.ContentModel
+@{
+    Layout = null;
+    var paras = (ViewData["Paras"] as List<HQBackSite.Models.ParaModel>) ?? new List<HQBackSite.Models.ParaModel>();
+}
+<div class="modal-body p-2">
+    @using (Html.BeginForm("ContentAdd", "Menu", FormMethod.Post, new { id = "addForm" }))
+    {
+        <div class="row mb-1">
+            <div class="col-md-4">
+                <label class="form-label" for="dept">部門</label>
+                <select class="form-select" id="dept" name="dept" onchange="loadCategories(this.value)">
+                    <option value="">請選擇</option>
+                    @foreach (var u in paras)
+                    {
+                        <option value="@u.code_name" @(Model.dept == u.code_name ? "selected" : "")>
+                            @u.data1 ( @u.code_name )
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="page">類別</label>
+                <select class="form-select" id="page" name="page">
+                    <option value="">請先選擇部門</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="subtype">顯示位置</label>
+                <select class="form-select" id="subtype" name="subtype">
+                    <option value="">請選擇</option>
+                    <option value="d_dw" @(Model.subtype == "d_dw" ? "selected" : "")>下載區塊</option>
+                    <option value="d_main" @(Model.subtype == "d_main" ? "selected" : "")>主內容區塊</option>
+                    <option value="d_main1" @(Model.subtype == "d_main1" ? "selected" : "")>主內容區塊一</option>
+                    <option value="d_main2" @(Model.subtype == "d_main2" ? "selected" : "")>主內容區塊二</option>
+                    <option value="d_main3" @(Model.subtype == "d_main3" ? "selected" : "")>主內容區塊三</option>
+                    <option value="d_main4" @(Model.subtype == "d_main4" ? "selected" : "")>主內容區塊四</option>
+                    <option value="d_main5" @(Model.subtype == "d_main5" ? "selected" : "")>主內容區塊五</option>
+                    <option value="d_right" @(Model.subtype == "d_right" ? "selected" : "")>右側區塊</option>
+                    <option value="d_right1" @(Model.subtype == "d_right1" ? "selected" : "")>右側區塊一</option>
+                    <option value="d_right2" @(Model.subtype == "d_right2" ? "selected" : "")>右側區塊二</option>
+                    <option value="d_right3" @(Model.subtype == "d_right3" ? "selected" : "")>右側區塊三</option>
+                    <option value="d_right4" @(Model.subtype == "d_right4" ? "selected" : "")>右側區塊四</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-md-4">
+                <label class="form-label" for="subject">標題</label>
+                @Html.TextBoxFor(m => m.subject, new { @class = "form-control", id = "subject", maxlength = "50", placeholder = "" })
+            </div>
+            <div class="col-md-4">
+                <label class="form-label" for="is_show">顯示</label>
+                <select class="form-select" id="is_show" name="is_show">
+                    <option value="">請選擇</option>
+                    <option value="Y" @(Model.is_show == "Y" ? "selected" : "")>Y</option>
+                    <option value="N" @(Model.is_show == "N" ? "selected" : "")>N</option>
+                </select>
+            </div>
+        </div>
+        <br />
+        <div class="row" id="contentRow">
+            <div class="col-md-12">
+                <label class="form-label" for="content">
+                    內容
+                    <small class="text-muted">（可上傳圖片或檔案自動插入內容）</small>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="uploadImageBtn" onclick="uploadImageForContent()">
+                        <i class="fas fa-image"></i> 上傳圖片
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-primary" id="uploadFileBtn" onclick="uploadFileForContent()">
+                        <i class="fas fa-file"></i> 上傳檔案
+                    </button>
+                </label>
+                <div class="mb-2">
+                    <input type="file" id="imageFileInput" style="display: none;" accept="image/*" onchange="handleImageUpload(event)">
+                    <input type="file" id="contentFileInput" style="display: none;" accept="*/*" onchange="handleContentFileUpload(event)">
+                </div>
+                @Html.TextAreaFor(m => m.content, new { @class = "form-control", id = "content", name = "content", placeholder = "" })
+            </div>
+        </div>
+        <div class="row" id="urlRow" style="display: none;">
+            <div class="col-md-12">
+                <label class="form-label" for="url">
+                    URL連結
+                    <small class="text-muted">（可貼上連結或上傳檔案自動取得連結）</small>
+                </label>
+                <div class="input-group">
+                    @Html.TextBoxFor(m => m.url, new { @class = "form-control", id = "url", name = "url", placeholder = "請輸入URL連結或上傳檔案" })
+                    <button type="button" class="btn btn-outline-secondary" id="uploadUrlBtn" onclick="uploadFileForUrl()">
+                        <i class="fas fa-upload"></i> 上傳檔案
+                    </button>
+                    <input type="file" id="urlFileInput" style="display: none;" accept="*/*" onchange="handleFileUpload(event)">
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+    <button type="button" class="btn btn-primary" onclick="submitAddForm()">確定</button>
+</div>
+<script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+<script src="~/Scripts/lib.ckeditor.js"></script>
+<script src="~/Scripts/content.js"></script>
+<script>
+    (function() {
+        function initEditor() {
+            if (typeof window.initCKEditor === 'function' && typeof CKEDITOR !== 'undefined') {
+                var textarea = document.getElementById('content');
+                if (textarea) {
+                    window.initCKEditor('content');
+                } else {
+                    setTimeout(initEditor, 100);
+                }
+            } else {
+                setTimeout(initEditor, 100);
+            }
+        }
+        
+        if (window.jQuery) {
+            window.jQuery(document).on('shown.bs.modal', function() {
+                setTimeout(function() {
+                    var textarea = document.getElementById('content');
+                    if (textarea && (!ckEditor || currentTextareaId !== 'content')) {
+                        if (ckEditor) {
+                            try { ckEditor.destroy(); } catch (e) {}
+                            ckEditor = null;
+                        }
+                        if (typeof editorInitialized !== 'undefined') editorInitialized = false;
+                        window.initCKEditor('content');
+                    }
+                }, 100);
+            });
+        }
+        
+        setTimeout(initEditor, 200);
+    })();
+
+    async function loadCategories(dept) {
+        var pageSelect = document.getElementById('page');
+        if (!pageSelect) return;
+
+        if (!dept) {
+            pageSelect.innerHTML = '<option value="">請先選擇部門</option>';
+            return;
+        }
+
+        pageSelect.innerHTML = '<option value="">載入中...</option>';
+
+        try {
+            var response = await fetch('/Menu/GetCategories?dept=' + encodeURIComponent(dept));
+            var result = await response.json();
+
+            pageSelect.innerHTML = '<option value="">請選擇</option>';
+            if (result.code === 1 && result.data && result.data.length > 0) {
+                result.data.forEach(function (item) {
+                    var option = document.createElement('option');
+                    option.value = item.page;
+                    option.textContent = item.subject;
+                    pageSelect.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Load categories error:', error);
+            pageSelect.innerHTML = '<option value="">載入失敗</option>';
+        }
+    }
+
+    async function submitAddForm() {
+        var form = document.getElementById('addForm');
+        if (!form) {
+            alert('表單不存在');
+            return;
+        }
+
+        var contentTextarea = document.getElementById('content');
+        var htmlContent = '';
+
+        if (typeof ckEditor !== 'undefined' && ckEditor) {
+            htmlContent = ckEditor.getData();
+            if (contentTextarea) {
+                contentTextarea.value = htmlContent;
+            }
+        } else if (contentTextarea) {
+            htmlContent = contentTextarea.value;
+        }
+
+        try {
+            var result = await libs.api.post('/Menu/ContentAdd', {
+                data: Object.fromEntries(new FormData(form)),
+                loadding: true
+            });
+
+            libs.result(result, function () {
+                if (typeof query === 'function') {
+                    query();
+                }
+                libs.modal.closeModal();
+            });
+        } catch (error) {
+            console.error('Submit form error:', error);
+            alert('提交失敗：' + (error.message || '未知錯誤'));
+        }
+    }
+</script>

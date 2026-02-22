@@ -154,6 +154,13 @@ Exception: {exception}";
             return lower.Contains("password") ||
                    lower.Contains("pwd") ||
                    lower.Contains("token") ||
+                   lower.Contains("account") ||
+                   lower.Contains("userid") ||
+                   lower.Contains("user_id") ||
+                   lower.Contains("username") ||
+                   lower.Contains("employeeid") ||
+                   lower.Contains("employee_id") ||
+                   lower.Contains("emid") ||
                    lower.Contains("secret");
         }
     }

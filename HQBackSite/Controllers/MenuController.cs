@@ -9,6 +9,40 @@ namespace HQBackSite.Controllers
     [BackSiteAuthorize]
     public class MenuController : BaseController
     {
+        #region Testable Wrappers
+
+        protected virtual string GetCurrentAccount()
+        {
+            return GetAccountFromCookie();
+        }
+
+        protected virtual string GetFormValue(string key)
+        {
+            return Request?.Form?[key];
+        }
+
+        protected virtual int ExecuteInternal(string sql, object param = null, ConnectionStringName connectionStringName = ConnectionStringName.SqlServer)
+        {
+            return Execute(sql, param, connectionStringName);
+        }
+
+        protected virtual List<T> QueryInternal<T>(string sql, object param = null, ConnectionStringName connectionStringName = ConnectionStringName.SqlServer)
+        {
+            return Query<T>(sql, param, connectionStringName);
+        }
+
+        protected virtual T QuerySingleInternal<T>(string sql, object param = null, ConnectionStringName connectionStringName = ConnectionStringName.SqlServer)
+        {
+            return QuerySingle<T>(sql, param, connectionStringName);
+        }
+
+        protected virtual List<string> GetUserCodeNamesInternal()
+        {
+            return GetUserCodeNames();
+        }
+
+        #endregion
+
         #region 選單設定
 
         public ActionResult Index()
@@ -525,7 +559,7 @@ WHERE subject_id = @subject_id";
 
         public ActionResult Content()
         {
-            var codeNames = GetUserCodeNames();
+            var codeNames = GetUserCodeNamesInternal();
 
             var sql = @"
 SELECT [type_name], code_name, data1, data2 
@@ -537,14 +571,14 @@ ORDER BY
 CASE WHEN [type_name] = N'部門網頁' THEN 1 ELSE 2 END,
 CASE WHEN [type_name] = N'部門網頁' THEN data2 ELSE code_name END
 ";
-            ViewData["Paras"] = Query<ParaModel>(sql, new { codeNames = codeNames });
+            ViewData["Paras"] = QueryInternal<ParaModel>(sql, new { codeNames = codeNames });
 
             return View(new ContentModel { is_show = "Y" });
         }
 
         public ActionResult ContentQuery(ContentModel request)
         {
-            var codeNames = GetUserCodeNames();
+            var codeNames = GetUserCodeNamesInternal();
 
             var sql = @"
 DECLARE @SkipRows INT
@@ -579,7 +613,7 @@ OFFSET @SkipRows ROWS
 FETCH NEXT @PageSize ROWS ONLY
 ";
 
-            var list = Query<ContentModel>(sql, new
+            var list = QueryInternal<ContentModel>(sql, new
             {
                 request.PageNo,
                 request.PageSize,
@@ -616,7 +650,7 @@ AND dept = @dept
 AND is_show = 'Y'
 ORDER BY c.page
 ";
-            var list = Query<ContentModel>(sql, new { dept });
+            var list = QueryInternal<ContentModel>(sql, new { dept });
             return Json(SuccessData(list));
         }
 
@@ -632,7 +666,7 @@ ORDER BY
 CASE WHEN [type_name] = N'部門網頁' THEN 1 ELSE 2 END,
 CASE WHEN [type_name] = N'部門網頁' THEN data2 ELSE code_name END
 ";
-            ViewData["Paras"] = Query<ParaModel>(sql, new { codeNames = GetUserCodeNames() });
+            ViewData["Paras"] = QueryInternal<ParaModel>(sql, new { codeNames = GetUserCodeNamesInternal() });
 
             return View(new ContentModel());
         }
@@ -674,7 +708,7 @@ INSERT INTO content
 VALUES 
 (@dept,@page,@subtype,@subject,@is_show,@url,@content)
 ";
-            Execute(sql, new
+            ExecuteInternal(sql, new
             {
                 request.dept,
                 request.page,
@@ -699,7 +733,7 @@ LEFT JOIN (SELECT * FROM dbo.para WITH(NOLOCK) WHERE [type] = '1050') AS p
 ON p.code_name = c.dept
 WHERE c.subtype <> 'd_topbtn' AND c.subject_id = @subject_id";
 
-            var data = QuerySingle<ContentModel>(contentSql, new
+            var data = QuerySingleInternal<ContentModel>(contentSql, new
             {
                 subject_id
             });
@@ -714,7 +748,7 @@ ORDER BY
 CASE WHEN [type_name] = N'部門網頁' THEN 1 ELSE 2 END,
 CASE WHEN [type_name] = N'部門網頁' THEN data2 ELSE code_name END
 ";
-            ViewData["Paras"] = Query<ParaModel>(sql, new { codeNames = GetUserCodeNames() });
+            ViewData["Paras"] = QueryInternal<ParaModel>(sql, new { codeNames = GetUserCodeNamesInternal() });
 
             var csql = @"
 SELECT c.page, c.subject
@@ -723,7 +757,7 @@ WHERE subtype = 'd_topbtn'
 AND (dept = @dept)
 AND (is_show = 'Y')
 ";
-            ViewData["Categorys"] = Query<ContentModel>(csql, new { dept = data.dept });
+            ViewData["Categorys"] = QueryInternal<ContentModel>(csql, new { dept = data.dept });
 
             return View(data);
         }
@@ -760,7 +794,7 @@ UPDATE content
 SET page = @page, subtype = @subtype, subject = @subject, is_show = @is_show, url = @url, content = @content
 WHERE subject_id = @subject_id AND subtype <> 'd_topbtn'
 ";
-            Execute(sql, new
+            ExecuteInternal(sql, new
             {
                 request.subject_id,
                 request.page,
@@ -1057,9 +1091,6 @@ WHERE des_no = @des_no
 
         public ActionResult ICSQuery(NewsModel request)
         {
-            var codeNames = GetUserCodeNames();
-            var today = System.DateTime.Now.Date;
-
             var sql = @"
 DECLARE @SkipRows INT
 DECLARE @Today DATE = CAST(GETDATE() AS DATE)
@@ -1100,7 +1131,7 @@ WHERE RowNum > @SkipRows
 ORDER BY RowNum
 ";
 
-            var list = Query<NewsModel>(sql, new
+            var list = QueryInternal<NewsModel>(sql, new
             {
                 request.PageNo,
                 request.PageSize,
@@ -1134,9 +1165,17 @@ ORDER BY RowNum
                 return Json(Fail("請選擇訊息類別"));
             }
 
-            var account = GetAccountFromCookie();
-            var icsSecurityDataJson = Request.Form["icsSecurityData"];
-            var icsIsoDataJson = Request.Form["icsIsoData"];
+            var account = GetCurrentAccount();
+            var icsSecurityDataJson = GetFormValue("icsSecurityData");
+            if (string.IsNullOrWhiteSpace(icsSecurityDataJson))
+            {
+                icsSecurityDataJson = request?.icsSecurityData;
+            }
+            var icsIsoDataJson = GetFormValue("icsIsoData");
+            if (string.IsNullOrWhiteSpace(icsIsoDataJson))
+            {
+                icsIsoDataJson = request?.icsIsoData;
+            }
 
             // 插入 news 資料
             var sql = @"
@@ -1146,7 +1185,7 @@ VALUES
 (@dept, @background, @priority, 'ics', @start_date, @end_date, @account, @urlpath);
 SELECT CAST(SCOPE_IDENTITY() AS INT);
 ";
-            var desNo = QuerySingle<int>(sql, new
+            var desNo = QuerySingleInternal<int>(sql, new
             {
                 request.dept,
                 request.background,
@@ -1167,11 +1206,11 @@ SELECT CAST(SCOPE_IDENTITY() AS INT);
                     {
                         var insertSql = @"
 INSERT INTO ics_list
-(DesNo, Category, DocName, DocUrl, CreateUser, CreateDate, Deleted)
+(DesNo, Category, doc_name, doc_url, create_user, create_date, Deleted)
 VALUES
 (@DesNo, @Category, @Content, @DocUrl, @CreateUser, GETDATE(), 0)
 ";
-                        Execute(insertSql, new
+                        ExecuteInternal(insertSql, new
                         {
                             DesNo = desNo,
                             Category = item.Category?.ToString() ?? "",
@@ -1195,7 +1234,7 @@ INSERT INTO ics_list
 VALUES
 (@DesNo, @Category, @DocNo, @DocName, @DocUrl, @AttachmentInfo, @MainUser, @Remark, @CreateUser, GETDATE(), 0)
 ";
-                        Execute(insertSql, new
+                        ExecuteInternal(insertSql, new
                         {
                             DesNo = desNo,
                             Category = item.SerialNumber?.ToString() ?? "",
@@ -1216,14 +1255,14 @@ VALUES
 
         public ActionResult ICSUpdate(int des_no)
         {
-            var data = QuerySingle<NewsModel>(@"SELECT TOP 1 * FROM news WITH (NOLOCK) WHERE des_no = @des_no", new { des_no });
+            var data = QuerySingleInternal<NewsModel>(@"SELECT TOP 1 * FROM news WITH (NOLOCK) WHERE des_no = @des_no", new { des_no }) ?? new NewsModel();
 
             if (data.IcsGroup == null)
             {
                 data.IcsGroup = new IcsGroupModel();
             }
-            data.IcsGroup.list = Query<IcsListModel>(@"SELECT * FROM ics_list WITH (NOLOCK) WHERE des_no = @des_no AND Deleted = 0", new { des_no }) ?? new List<IcsListModel>();
-            data.IcsGroup.uploads = Query<IcsUploadModel>(@"SELECT * FROM ics_upload WITH (NOLOCK) WHERE des_no = @des_no AND Deleted = 0", new { des_no }) ?? new List<IcsUploadModel>();
+            data.IcsGroup.list = QueryInternal<IcsListModel>(@"SELECT *, DesNo AS des_no FROM ics_list WITH (NOLOCK) WHERE DesNo = @des_no AND Deleted = 0", new { des_no }) ?? new List<IcsListModel>();
+            data.IcsGroup.uploads = QueryInternal<IcsUploadModel>(@"SELECT *, DesNo AS des_no FROM ics_upload WITH (NOLOCK) WHERE DesNo = @des_no AND Deleted = 0", new { des_no }) ?? new List<IcsUploadModel>();
 
             return View(data);
         }
@@ -1236,9 +1275,17 @@ VALUES
                 return Json(Fail("請選擇訊息類別"));
             }
 
-            var account = GetAccountFromCookie();
-            var icsSecurityDataJson = Request.Form["icsSecurityData"];
-            var icsIsoDataJson = Request.Form["icsIsoData"];
+            var account = GetCurrentAccount();
+            var icsSecurityDataJson = GetFormValue("icsSecurityData");
+            if (string.IsNullOrWhiteSpace(icsSecurityDataJson))
+            {
+                icsSecurityDataJson = request?.icsSecurityData;
+            }
+            var icsIsoDataJson = GetFormValue("icsIsoData");
+            if (string.IsNullOrWhiteSpace(icsIsoDataJson))
+            {
+                icsIsoDataJson = request?.icsIsoData;
+            }
 
             // 更新 news 資料
             var sql = @"
@@ -1252,7 +1299,7 @@ SET dept = @dept,
     update_date = GETDATE()
 WHERE des_no = @des_no
 ";
-            Execute(sql, new
+            ExecuteInternal(sql, new
             {
                 request.des_no,
                 request.dept,
@@ -1270,7 +1317,7 @@ WHERE des_no = @des_no
                 if (icsSecurityData != null)
                 {
                     // 先標記所有現有資料為刪除
-                    Execute(@"UPDATE ics_list SET Deleted = 1 WHERE DesNo = @DesNo", new { DesNo = request.des_no });
+                    ExecuteInternal(@"UPDATE ics_list SET Deleted = 1 WHERE DesNo = @DesNo", new { DesNo = request.des_no });
 
                     // 新增或更新資料
                     foreach (var item in icsSecurityData)
@@ -1283,7 +1330,7 @@ WHERE des_no = @des_no
                             // 標記為刪除
                             if (listId > 0)
                             {
-                                Execute(@"UPDATE ics_list SET Deleted = 1 WHERE ListID = @ListID", new { ListID = listId });
+                                ExecuteInternal(@"UPDATE ics_list SET Deleted = 1 WHERE ListID = @ListID", new { ListID = listId });
                             }
                         }
                         else if (listId > 0)
@@ -1296,7 +1343,7 @@ SET Category = @Category,
     DocUrl = @DocUrl
 WHERE ListID = @ListID
 ";
-                            Execute(updateSql, new
+                            ExecuteInternal(updateSql, new
                             {
                                 ListID = listId,
                                 Category = item.Category?.ToString() ?? "",
@@ -1313,7 +1360,7 @@ INSERT INTO ics_list
 VALUES
 (@DesNo, @Category, @Content, @DocUrl, @CreateUser, GETDATE(), 0)
 ";
-                            Execute(insertSql, new
+                            ExecuteInternal(insertSql, new
                             {
                                 DesNo = request.des_no,
                                 Category = item.Category?.ToString() ?? "",
@@ -1331,7 +1378,7 @@ VALUES
                 if (icsIsoData != null)
                 {
                     // 先標記所有現有資料為刪除
-                    Execute(@"UPDATE ics_list SET Deleted = 1 WHERE DesNo = @DesNo", new { DesNo = request.des_no });
+                    ExecuteInternal(@"UPDATE ics_list SET Deleted = 1 WHERE DesNo = @DesNo", new { DesNo = request.des_no });
 
                     // 新增或更新資料
                     foreach (var item in icsIsoData)
@@ -1344,7 +1391,7 @@ VALUES
                             // 標記為刪除
                             if (listId > 0)
                             {
-                                Execute(@"UPDATE ics_list SET Deleted = 1 WHERE ListID = @ListID", new { ListID = listId });
+                                ExecuteInternal(@"UPDATE ics_list SET Deleted = 1 WHERE ListID = @ListID", new { ListID = listId });
                             }
                         }
                         else if (listId > 0)
@@ -1361,7 +1408,7 @@ SET Category = @Category,
     Remark = @Remark
 WHERE ListID = @ListID
 ";
-                            Execute(updateSql, new
+                            ExecuteInternal(updateSql, new
                             {
                                 ListID = listId,
                                 Category = item.SerialNumber?.ToString() ?? "",
@@ -1382,7 +1429,7 @@ INSERT INTO ics_list
 VALUES
 (@DesNo, @Category, @DocNo, @DocName, @DocUrl, @AttachmentInfo, @MainUser, @Remark, @CreateUser, GETDATE(), 0)
 ";
-                            Execute(insertSql, new
+                            ExecuteInternal(insertSql, new
                             {
                                 DesNo = request.des_no,
                                 Category = item.SerialNumber?.ToString() ?? "",
@@ -1401,7 +1448,7 @@ VALUES
             else
             {
                 // 如果不是資安文件或 ISO 文件，刪除所有相關的 ics_list 資料
-                Execute(@"UPDATE ics_list SET Deleted = 1 WHERE DesNo = @DesNo", new { DesNo = request.des_no });
+                ExecuteInternal(@"UPDATE ics_list SET Deleted = 1 WHERE DesNo = @DesNo", new { DesNo = request.des_no });
             }
 
             return Json(Success());

@@ -7,6 +7,7 @@ namespace HQBackSite
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
+            filters.Add(new OperationLogAttribute());
             filters.Add(new GlobalExceptionFilterAttribute());
         }
     }

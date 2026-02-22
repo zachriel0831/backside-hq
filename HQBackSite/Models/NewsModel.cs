@@ -25,6 +25,10 @@ namespace HQBackSite.Models
 
         public IcsGroupModel IcsGroup { get; set; } 
 
+        // 前端使用 JSON POST 時，ICS 明細會放在 request body 中
+        public string icsSecurityData { get; set; }
+        public string icsIsoData { get; set; }
+
         #endregion
     }
 }

@@ -232,6 +232,24 @@
 - `HQ/Controllers/BacksideController.cs`
   - `Page/Unit/Content/News/Safe/Hr` 使用 `[Authorize]`
 
+### 全域操作日誌（AOP / ActionFilter）
+
+- 檔案：`HQBackSite/Attributes/OperationLogAttribute.cs`
+- 註冊：`HQBackSite/App_Start/FilterConfig.cs`
+- 作用：所有 MVC Action 入口皆會在執行前後輸出操作日誌（`Trace` / `Debug`）
+  - `OnActionExecuting`：記錄 controller、action、method、url、query、form、action args
+  - `OnActionExecuted`：記錄耗時、status code、result type、是否例外
+
+#### 脫敏規則（已啟用）
+
+以下關鍵字欄位會自動遮罩為 `***`（大小寫不敏感）：
+
+- 密碼類：`password`, `pwd`
+- 驗證類：`token`, `secret`, `authorization`, `cookie`
+- 帳戶識別類：`account`, `userid`, `user_id`, `username`, `employeeid`, `employee_id`, `emid`
+
+> 備註：`GlobalExceptionFilterAttribute` 也已同步套用帳戶/密碼脫敏規則，避免例外日誌洩漏敏感資訊。
+
 ---
 
 ## 6) 建議補充（後續可選）
@@ -240,6 +258,102 @@
 1. 每個 API 的 Request Body 範例（目前多使用 `Dictionary<string,string>`）
 2. 主要資料表對照（`news`, `content`, `unit`, `page`, `para`）
 3. 權限矩陣（哪類帳號可進入哪些後台功能）
+
+
+---
+
+## 7) 測試說明（2026-02-22 更新）
+
+### 7.1 ICS（國際認證規範公告）單元測試覆蓋範圍
+
+本次已針對以下路由完成「新刪修查」相關單元測試：
+
+- `GET /Menu/ICS`
+- `GET /Menu/ICSQuery`
+- `GET /Menu/ICSAdd`
+- `POST /Menu/ICSAdd`
+- `GET /Menu/ICSUpdate`
+- `POST /Menu/ICSUpdate`
+
+對應測試檔：
+
+- `tests/HQBackSite.Tests/MenuControllerIcsTests.cs`
+
+測試案例總數：`9`
+
+- 查詢/頁面回傳：`ICS`, `ICSQuery`, `ICSAdd`, `ICSUpdate(GET)`
+- 新增：`ICSAdd(POST)` 成功與失敗（未選擇訊息類別）
+- 更新：`ICSUpdate(POST)` 成功與失敗（未選擇訊息類別、不同類別分支處理）
+
+
+### 7.2 測試專案與解決方案設定
+
+已新增測試專案：
+
+- `tests/HQBackSite.Tests/HQBackSite.Tests.csproj`
+
+並加入 `HQ.sln`：
+
+- `HQBackSite.Tests`
+
+目前測試專案關鍵依賴：
+
+- `Microsoft.NET.Test.Sdk`
+- `MSTest.TestAdapter`
+- `MSTest.TestFramework`
+- `System.Web.Mvc` / `System.Web.WebPages` / `System.Web.Razor`（針對 MVC5 Controller 測試）
+
+
+### 7.3 執行方式與結果
+
+由於本專案為 ASP.NET MVC (.NET Framework) 舊版 Web 專案，建議使用 VS2022 的 `MSBuild.exe` + `vstest.console.exe`：
+
+```cmd
+cmd /c ""C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe" "d:\work_space\新光三越\20260203 新版HQ 接手剩下頁面\master\tests\HQBackSite.Tests\HQBackSite.Tests.csproj" /t:Build /p:Configuration=Debug /v:q && "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" "d:\work_space\新光三越\20260203 新版HQ 接手剩下頁面\master\tests\HQBackSite.Tests\bin\Debug\net472\HQBackSite.Tests.dll""
+```
+
+執行結果：
+
+- `Total tests: 9`
+- `Passed: 9`
+- `Failed: 0`
+
+
+### 7.4 已知事項
+
+- 建置過程中可見 `MSB3277`（組件版本衝突）警告，目前不影響本次 ICS 測試通過。
+- 若後續要降低警告，建議統一測試專案與主專案的 `System.*` 相關套件版本。
+
+
+### 7.5 內容設定（Content）單元測試覆蓋範圍（2026-02-22 新增）
+
+本次依照同樣模式補上以下路由單元測試：
+
+- `GET /Menu/Content`
+- `GET /Menu/ContentQuery`
+- `GET /Menu/GetCategories`
+- `GET /Menu/ContentAdd`
+- `POST /Menu/ContentAdd`
+- `GET /Menu/ContentUpdate`
+- `POST /Menu/ContentUpdate`
+- `POST /Menu/UploadFileForUrl`
+
+對應測試檔：
+
+- `tests/HQBackSite.Tests/MenuControllerContentTests.cs`
+
+Content 測試案例數：`12`
+
+- 頁面與查詢：`Content`, `ContentQuery`, `GetCategories`
+- 新增：`ContentAdd(GET/POST)`（含必填檢核、`d_dw` 需 URL 檢核、成功新增）
+- 更新：`ContentUpdate(GET/POST)`（含必填檢核、成功更新）
+- 上傳：`UploadFileForUrl(POST)`（無檔案時失敗路徑）
+
+本次整體測試集（ICS + Content）執行結果：
+
+- `Total tests: 21`
+- `Passed: 21`
+- `Failed: 0`
 
 
 ## 資料庫 DDL

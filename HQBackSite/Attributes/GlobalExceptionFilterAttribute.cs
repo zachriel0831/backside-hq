@@ -1,10 +1,10 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
-using System.Diagnostics;
 using System.Text;
 using System.Web.Mvc;
 
@@ -12,6 +12,8 @@ namespace HQBackSite.Attributes
 {
     public class GlobalExceptionFilterAttribute : HandleErrorAttribute
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         public override void OnException(ExceptionContext filterContext)
         {
             if (filterContext == null || filterContext.ExceptionHandled)
@@ -39,8 +41,7 @@ QueryString: {queryString}
 Form: {formData}
 Exception: {exception}";
 
-            Trace.TraceError(logMessage);
-            Debug.WriteLine(logMessage);
+            Logger.Error(logMessage);
 
             var showDetail = ShouldShowDetailedError(httpContext);
             var isAjax = request?.IsAjaxRequest() == true ||

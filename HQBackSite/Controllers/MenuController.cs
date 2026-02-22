@@ -41,6 +41,25 @@ namespace HQBackSite.Controllers
             return GetUserCodeNames();
         }
 
+        protected virtual List<string> GetAccessibleCodeNamesInternal()
+        {
+            var codeNames = GetUserCodeNamesInternal() ?? new List<string>();
+            if (codeNames.Count > 0)
+            {
+                return codeNames;
+            }
+
+            var sql = @"
+SELECT code_name
+FROM dbo.para WITH(NOLOCK)
+WHERE [type] = '1050'
+AND [type_name] IN (N'部門網頁', N'分店網頁')
+AND ISNULL(code_name, '') <> ''
+";
+
+            return QueryInternal<string>(sql) ?? new List<string>();
+        }
+
         #endregion
 
         #region 選單設定
@@ -58,11 +77,7 @@ DECLARE @SkipRows INT
 
 SET @SkipRows = (@PageNo - 1) * @PageSize
 
-SELECT TB.*
-      ,@PageNo AS PageNo
-      ,@PageSize AS PageSize
-      ,COUNT(1) OVER() AS TotalCount
-FROM
+;WITH TB AS
 (
     SELECT [type_name], code, code_name, data1, data2, data6
     FROM dbo.para WITH(NOLOCK)
@@ -70,12 +85,24 @@ FROM
       AND [type_name] IN (N'部門網頁', N'分店網頁')
       AND (@data1 IS NULL OR @data1 = '' OR data1 LIKE '%' + @data1 + '%')
       AND (@data2 IS NULL OR @data2 = '' OR data2 LIKE '%' + @data2 + '%')
-) AS TB
-ORDER BY 
-    CASE WHEN TB.[type_name] = N'部門網頁' THEN 1 ELSE 2 END,
-    CASE WHEN TB.[type_name] = N'部門網頁' THEN TB.code ELSE TB.code_name END
-OFFSET @SkipRows ROWS 
-FETCH NEXT @PageSize ROWS ONLY
+), Filtered AS
+(
+    SELECT TB.*
+          ,ROW_NUMBER() OVER (
+              ORDER BY 
+                  CASE WHEN TB.[type_name] = N'部門網頁' THEN 1 ELSE 2 END,
+                  CASE WHEN TB.[type_name] = N'部門網頁' THEN TB.code ELSE TB.code_name END
+          ) AS RowNum
+          ,COUNT(1) OVER() AS TotalCount
+    FROM TB
+)
+SELECT Filtered.*
+      ,@PageNo AS PageNo
+      ,@PageSize AS PageSize
+FROM Filtered
+WHERE RowNum > @SkipRows
+  AND RowNum <= (@SkipRows + @PageSize)
+ORDER BY RowNum
 ";
 
             var list = Query<ParaModel>(sql, new
@@ -364,7 +391,7 @@ AND code_name = @code_name";
 
         public ActionResult Category()
         {
-            var codeNames = GetUserCodeNames();
+            var codeNames = GetAccessibleCodeNamesInternal();
 
             var sql = @"
 SELECT [type_name], code_name, data1, data2 
@@ -384,18 +411,14 @@ CASE WHEN [type_name] = N'部門網頁' THEN data2 ELSE code_name END
         [HttpPost]
         public ActionResult CategoryQuery(ContentModel request)
         {
-            var codeNames = GetUserCodeNames();
+            var codeNames = GetAccessibleCodeNamesInternal();
 
             var sql = @"
 DECLARE @SkipRows INT
 
 SET @SkipRows = (@PageNo - 1) * @PageSize
 
-SELECT TB.*
-      ,@PageNo AS PageNo
-      ,@PageSize AS PageSize
-      ,COUNT(1) OVER() AS TotalCount
-FROM
+;WITH TB AS
 (
       SELECT c.*,p.[type_name],p.code,p.data1,p.data2,p.code_name
       FROM dbo.content AS c WITH(NOLOCK) 
@@ -406,12 +429,24 @@ FROM
       AND (dept in @codeNames)
       AND (@dept IS NULL OR @dept = '' OR dept = @dept)
       AND (@is_show IS NULL OR @is_show = '' OR is_show = @is_show)
-) AS TB
-ORDER BY 
-    CASE WHEN TB.[type_name] = N'部門網頁' THEN 1 ELSE 2 END,
-    CASE WHEN TB.[type_name] = N'部門網頁' THEN TB.code ELSE TB.code_name END
-OFFSET @SkipRows ROWS 
-FETCH NEXT @PageSize ROWS ONLY
+), Filtered AS
+(
+    SELECT TB.*
+          ,ROW_NUMBER() OVER (
+              ORDER BY 
+                  CASE WHEN TB.[type_name] = N'部門網頁' THEN 1 ELSE 2 END,
+                  CASE WHEN TB.[type_name] = N'部門網頁' THEN TB.code ELSE TB.code_name END
+          ) AS RowNum
+          ,COUNT(1) OVER() AS TotalCount
+    FROM TB
+)
+SELECT Filtered.*
+      ,@PageNo AS PageNo
+      ,@PageSize AS PageSize
+FROM Filtered
+WHERE RowNum > @SkipRows
+  AND RowNum <= (@SkipRows + @PageSize)
+ORDER BY RowNum
 ";
 
             var list = Query<ContentModel>(sql, new
@@ -437,7 +472,7 @@ FETCH NEXT @PageSize ROWS ONLY
 
         public ActionResult CategoryAdd()
         {
-            var codeNames = GetUserCodeNames();
+            var codeNames = GetAccessibleCodeNamesInternal();
 
             var sql = @"
 SELECT [type_name], code_name, data1, data2 
@@ -494,7 +529,7 @@ VALUES (@page, @dept, 'd_topbtn', @subject, @url, @content, @is_show, getdate())
 
         public ActionResult CategoryUpdate(int subject_id)
         {
-            var codeNames = GetUserCodeNames();
+            var codeNames = GetAccessibleCodeNamesInternal();
 
             var sql = @"
 SELECT [type_name], code_name, data1, data2 
@@ -559,7 +594,7 @@ WHERE subject_id = @subject_id";
 
         public ActionResult Content()
         {
-            var codeNames = GetUserCodeNamesInternal();
+            var codeNames = GetAccessibleCodeNamesInternal();
 
             var sql = @"
 SELECT [type_name], code_name, data1, data2 
@@ -578,18 +613,14 @@ CASE WHEN [type_name] = N'部門網頁' THEN data2 ELSE code_name END
 
         public ActionResult ContentQuery(ContentModel request)
         {
-            var codeNames = GetUserCodeNamesInternal();
+            var codeNames = GetAccessibleCodeNamesInternal();
 
             var sql = @"
 DECLARE @SkipRows INT
 
 SET @SkipRows = (@PageNo - 1) * @PageSize
 
-SELECT TB.*
-      ,@PageNo AS PageNo
-      ,@PageSize AS PageSize
-      ,COUNT(1) OVER() AS TotalCount
-FROM
+;WITH TB AS
 (
     SELECT c.page,c.dept,c.subtype,c.subject_id,c.subject,c.content, b.subject as csubject, p.code, p.code_name, p.data1, p.data2, p.type_name,c.is_show
     FROM content AS c WITH(NOLOCK)
@@ -602,15 +633,27 @@ FROM
     AND c.subtype NOT IN ('d_topbtn','d_left')
     AND c.dept in @codeNames 
     AND (@dept IS NULL OR @dept = '' OR c.dept = @dept)
-) AS TB
-WHERE (@is_show IS NULL OR @is_show = '' OR TB.is_show = @is_show)
-AND (@subject IS NULL OR @subject = '' OR TB.subject LIKE '%' + @subject + '%')
-ORDER BY
-    CASE WHEN TB.[type_name] = N'部門網頁' THEN 1 ELSE 2 END,
-    CASE WHEN TB.[type_name] = N'部門網頁' THEN TB.code ELSE TB.code_name END,
-    TB.page, TB.subtype, TB.subject
-OFFSET @SkipRows ROWS 
-FETCH NEXT @PageSize ROWS ONLY
+), Filtered AS
+(
+    SELECT TB.*
+          ,ROW_NUMBER() OVER (
+              ORDER BY
+                  CASE WHEN TB.[type_name] = N'部門網頁' THEN 1 ELSE 2 END,
+                  CASE WHEN TB.[type_name] = N'部門網頁' THEN TB.code ELSE TB.code_name END,
+                  TB.page, TB.subtype, TB.subject
+          ) AS RowNum
+          ,COUNT(1) OVER() AS TotalCount
+    FROM TB
+    WHERE (@is_show IS NULL OR @is_show = '' OR TB.is_show = @is_show)
+    AND (@subject IS NULL OR @subject = '' OR TB.subject LIKE '%' + @subject + '%')
+)
+SELECT Filtered.*
+      ,@PageNo AS PageNo
+      ,@PageSize AS PageSize
+FROM Filtered
+WHERE RowNum > @SkipRows
+  AND RowNum <= (@SkipRows + @PageSize)
+ORDER BY RowNum
 ";
 
             var list = QueryInternal<ContentModel>(sql, new
@@ -666,7 +709,7 @@ ORDER BY
 CASE WHEN [type_name] = N'部門網頁' THEN 1 ELSE 2 END,
 CASE WHEN [type_name] = N'部門網頁' THEN data2 ELSE code_name END
 ";
-            ViewData["Paras"] = QueryInternal<ParaModel>(sql, new { codeNames = GetUserCodeNamesInternal() });
+            ViewData["Paras"] = QueryInternal<ParaModel>(sql, new { codeNames = GetAccessibleCodeNamesInternal() });
 
             return View(new ContentModel());
         }
@@ -748,7 +791,7 @@ ORDER BY
 CASE WHEN [type_name] = N'部門網頁' THEN 1 ELSE 2 END,
 CASE WHEN [type_name] = N'部門網頁' THEN data2 ELSE code_name END
 ";
-            ViewData["Paras"] = QueryInternal<ParaModel>(sql, new { codeNames = GetUserCodeNamesInternal() });
+            ViewData["Paras"] = QueryInternal<ParaModel>(sql, new { codeNames = GetAccessibleCodeNamesInternal() });
 
             var csql = @"
 SELECT c.page, c.subject
@@ -896,7 +939,7 @@ SET @SkipRows = (@PageNo - 1) * @PageSize
                ELSE N'下線'
            END AS status
     FROM news WITH (NOLOCK) 
-    WHERE type in ('msg1','msg2') AND dept in (N'案例分享',N'最新公告',N'安全新知',N'政策推動',N'熱門話題',N'職場生活',N'快樂員購')
+    WHERE type in ('msg1','msg2','light') AND dept in (N'案例分享',N'最新公告',N'安全新知',N'政策推動',N'熱門話題',N'職場生活',N'快樂員購',N'跑馬燈設定')
 ), Filtered AS
 (
     SELECT TB.*
@@ -977,7 +1020,8 @@ ORDER BY RowNum
                 { "政策推動", "msg2" },
                 { "熱門話題", "msg2" },
                 { "職場生活", "msg2" },
-                { "快樂員購", "msg2" }
+                { "快樂員購", "msg2" },
+                { "跑馬燈設定", "light" }
             };
             if (!deptMap.TryGetValue(request.dept, out var type))
             {
@@ -1051,7 +1095,9 @@ VALUES
                 { "政策推動", "msg2" },
                 { "熱門話題", "msg2" },
                 { "職場生活", "msg2" },
-                { "快樂員購", "msg2" }
+                { "快樂員購", "msg2" },
+                { "跑馬燈設定", "light" }
+
             };
             if (!deptMap.TryGetValue(request.dept, out var type))
             {
@@ -1230,7 +1276,7 @@ VALUES
                     {
                         var insertSql = @"
 INSERT INTO ics_list
-(DesNo, Category, DocNo, DocName, DocUrl, AttachmentInfo, MainUser, Remark, CreateUser, CreateDate, Deleted)
+(DesNo, Category, doc_no, doc_name, doc_url, attachment_info, main_user, Remark, create_user, create_date, Deleted)
 VALUES
 (@DesNo, @Category, @DocNo, @DocName, @DocUrl, @AttachmentInfo, @MainUser, @Remark, @CreateUser, GETDATE(), 0)
 ";
@@ -1400,11 +1446,11 @@ VALUES
                             var updateSql = @"
 UPDATE ics_list
 SET Category = @Category,
-    DocNo = @DocNo,
-    DocName = @DocName,
-    DocUrl = @DocUrl,
-    AttachmentInfo = @AttachmentInfo,
-    MainUser = @MainUser,
+    doc_no = @DocNo,
+    doc_name = @DocName,
+    doc_url = @DocUrl,
+    attachment_info = @AttachmentInfo,
+    main_user = @MainUser,
     Remark = @Remark
 WHERE ListID = @ListID
 ";
@@ -1425,7 +1471,7 @@ WHERE ListID = @ListID
                             // 新增資料
                             var insertSql = @"
 INSERT INTO ics_list
-(DesNo, Category, DocNo, DocName, DocUrl, AttachmentInfo, MainUser, Remark, CreateUser, CreateDate, Deleted)
+(DesNo, Category, doc_no, doc_name, doc_url, attachment_info, main_user, Remark, create_user, create_date, Deleted)
 VALUES
 (@DesNo, @Category, @DocNo, @DocName, @DocUrl, @AttachmentInfo, @MainUser, @Remark, @CreateUser, GETDATE(), 0)
 ";

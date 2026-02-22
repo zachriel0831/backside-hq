@@ -1,13 +1,13 @@
 ﻿using Dapper;
 using HQBackSite.Models;
 using HQBackSite.Utils;
+using NLog;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
@@ -17,6 +17,8 @@ namespace HQBackSite.Controllers
 {
     public class BaseController : Controller
     {
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         #region Result
 
         protected new ActionResult Json(object data)
@@ -212,8 +214,7 @@ SQL: {sql}
 Param: {paramText}
 Exception: {ex}";
 
-            Trace.TraceError(message);
-            Debug.WriteLine(message);
+            Logger.Error(message);
         }
         #endregion
 
@@ -243,8 +244,7 @@ Exception: {ex}";
             }
             catch (Exception ex)
             {
-                Trace.TraceError($"[AUTH_COOKIE_ERROR] {ex}");
-                Debug.WriteLine($"[AUTH_COOKIE_ERROR] {ex}");
+                Logger.Error(ex, "[AUTH_COOKIE_ERROR]");
                 return null;
             }
         }
@@ -266,8 +266,7 @@ Exception: {ex}";
             }
             catch (Exception ex)
             {
-                Trace.TraceError($"[GET_USER_CODE_NAMES_ERROR] account={account}, ex={ex}");
-                Debug.WriteLine($"[GET_USER_CODE_NAMES_ERROR] account={account}, ex={ex}");
+                Logger.Error(ex, "[GET_USER_CODE_NAMES_ERROR] account={0}", account);
                 return new List<string>();
             }
         }
@@ -308,8 +307,7 @@ Exception: {ex}";
             }
             catch (Exception ex)
             {
-                Trace.TraceError($"[CHECK_USER_DEPARTMENT_ERROR] ex={ex}");
-                Debug.WriteLine($"[CHECK_USER_DEPARTMENT_ERROR] ex={ex}");
+                Logger.Error(ex, "[CHECK_USER_DEPARTMENT_ERROR]");
                 return false;
             }
         }

@@ -17,6 +17,47 @@ MouseChangeColorOver = function (id) {
     }
 }
 
+initMarquee = function () {
+    var $marquee = $('.marquee');
+    if ($marquee.length === 0) {
+        return;
+    }
+
+    $marquee.marquee({
+        duration: 10000,
+        gap: 50,
+        delayBeforeStart: 0,
+        pauseOnHover: true,
+        direction: 'up',
+        duplicated: true,
+        startVisible: true
+    });
+}
+
+/// 跑馬燈（由 News[type=light] 載入）
+fpMarqueeRead = function () {
+    g_cus.CommonConnect(window.location.origin + "/api/Marquee/Read", {}, function (res) {
+        var $list = $("#marquee_light_list");
+        $list.empty();
+
+        if (res && res.Table && res.Table.length > 0) {
+            res.Table.forEach(function (val) {
+                // descpt 預期就是 <li>...</li>
+                if (val.descpt) {
+                    $list.append(val.descpt);
+                }
+                else if (val.background && val.urlpath) {
+                    $list.append('<li><a href="' + val.urlpath + '" target="_blank">' + val.background + '</a></li>');
+                }
+            });
+        }
+
+        initMarquee();
+    }, function () {
+        initMarquee();
+    })
+};
+
 
 
 ///
@@ -310,6 +351,49 @@ fpMainRightRead = function () {
                 $('<br>').appendTo($a);
             });
         }
+    }, function () {
+    })
+};
+
+/// 目前寫在d_main_l2的位置上
+/// 國際認證規範公告
+fpIcsRead = function () {
+    g_cus.CommonConnect(window.location.origin + "/api/Ics/IcsRead", {}, function (res) {
+        var $d_main_l2 = $("#d_main_l2");
+        $d_main_l2.empty();
+
+        if (!res || !res.Table || res.Table.length === 0) {
+            return;
+        }
+
+        var rendered = {};
+        res.Table.forEach(function (val) {
+            var listId = val.listid || val.ListID || val.listID || val.ListId;
+            var itemKey = (listId !== undefined && listId !== null)
+                ? ('L_' + listId)
+                : ('N_' + (val.des_no || '') + '_' + (val.background || ''));
+
+            if (rendered[itemKey]) {
+                return;
+            }
+            rendered[itemKey] = true;
+
+            var title = val.doc_name || val.docname || val.DocName || val.background || '';
+            var href = val.doc_url || val.docurl || val.DocUrl || val.urlpath || '';
+
+            if (!title || !href) {
+                return;
+            }
+
+            var $a = $('<a>', {
+                'href': href,
+                'html': '◎ ' + title,
+                'target': '_blank'
+            });
+
+            $d_main_l2.append($a);
+            $('<br>').appendTo($a);
+        });
     }, function () {
     })
 };
@@ -635,12 +719,16 @@ $(document).ready(function () {
 
     // banner
     fpBannerRead();
+    // 跑馬燈
+    fpMarqueeRead();
     //人資園地
     fpHrHomeRead();
     // 人資部公告
     fpMainLeftRead();
     // 資訊部公告
     fpMainRightRead();
+    // 國際認證規範公告
+    fpIcsRead();
     // 安全停看聽
     fpSafeRead();
     // 網站連結
@@ -651,21 +739,6 @@ $(document).ready(function () {
     fpHrContent();
     // 資訊部公告(分頁)
     fpItConent();
-
-     $('.marquee').marquee({
-        //duration in milliseconds of the marquee
-        duration: 10000,
-        //gap in pixels between the tickers
-        gap: 50,
-        //time in milliseconds before the marquee will start animating
-        delayBeforeStart: 0,
-        pauseOnHover : true,
-        //'left' or 'right'
-        direction: 'up',
-        //true or false - should the marquee be duplicated to show an effect of continues flow
-        duplicated: true,
-        startVisible: true
-     });
 
     //setInterval(function () {
     //    $('.marquee').marquee('toggle');

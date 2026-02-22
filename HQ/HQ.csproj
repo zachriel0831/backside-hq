@@ -199,7 +199,9 @@
     <Compile Include="Controllers\api\DeptController.cs" />
     <Compile Include="Controllers\HqController.cs" />
     <Compile Include="Controllers\api\MainController.cs" />
+    <Compile Include="Controllers\api\MarqueeController.cs" />
     <Compile Include="Controllers\api\RoomController.cs" />
+    <Compile Include="Controllers\api\IcsController.cs" />
     <Compile Include="Controllers\api\UnitController.cs" />
     <Compile Include="Controllers\api\ValuesController.cs" />
     <Compile Include="Global.asax.cs">

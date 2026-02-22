@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -17,6 +18,7 @@ namespace HQBackSite.Attributes
     /// </summary>
     public class OperationLogAttribute : ActionFilterAttribute
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private const string StopwatchKey = "__oplog_stopwatch";
         private const string StartAtKey = "__oplog_startat";
 
@@ -110,8 +112,7 @@ Query: {query}
 Form: {form}
 ActionArgs: {actionArgs}";
 
-            Trace.TraceInformation(beginMessage);
-            Debug.WriteLine(beginMessage);
+            Logger.Info(beginMessage);
 
             base.OnActionExecuting(filterContext);
         }
@@ -163,13 +164,12 @@ Exception: {(hasException ? filterContext.Exception.ToString() : string.Empty)}"
 
             if (hasException)
             {
-                Trace.TraceError(endMessage);
+                Logger.Error(endMessage);
             }
             else
             {
-                Trace.TraceInformation(endMessage);
+                Logger.Info(endMessage);
             }
-            Debug.WriteLine(endMessage);
 
             base.OnActionExecuted(filterContext);
         }

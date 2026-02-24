@@ -7,6 +7,42 @@
 - `HQ`：前台網站 + 後台（舊版）+ Web API
 - `HQBackSite`：後台管理站（新版）
 
+### 前置作業（2026-02-22）
+
+#### 跑馬燈資料寫入規則（Message）
+
+- 功能位置：`HQBackSite/Controllers/MenuController.cs`
+- 適用動作：
+  - `POST /Menu/MessageAdd`
+  - `POST /Menu/MessageUpdate`
+
+`dept` 與 `type` 對應如下（含跑馬燈）：
+
+```csharp
+var deptMap = new Dictionary<string, string>
+{
+    { "案例分享", "msg1" },
+    { "最新公告", "msg1" },
+    { "安全新知", "msg1" },
+    { "政策推動", "msg2" },
+    { "熱門話題", "msg2" },
+    { "職場生活", "msg2" },
+    { "快樂員購", "msg2" },
+    { "跑馬燈設定", "light" }
+};
+```
+
+寫入 `news` 的 SQL（Insert）如下，`type` 由 `deptMap` 取得（跑馬燈會寫入 `light`）：
+
+```sql
+INSERT INTO news
+(dept,background,descpt,priority,type,start_date,end_date,create_user)
+VALUES
+(@dept,@background,@descpt,@priority,@type,@start_date,@end_date,@account)
+```
+
+補充：`GET /Menu/MessageQuery` 已納入 `type in ('msg1','msg2','light')`，可正確查到「跑馬燈設定」資料。
+
 ---
 
 ## 2) 啟動類（Startup）與啟動流程

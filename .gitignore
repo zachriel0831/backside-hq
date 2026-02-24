@@ -263,3 +263,15 @@ __pycache__/
 
 Upload/
 **/App_Data/Logs/*
+
+*.txt
+*.log
+*.pdf
+*.doc
+*.gif
+*.jpg
+*.png
+*.zip
+*.rar
+*.7z
+*.webp

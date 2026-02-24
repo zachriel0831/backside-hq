@@ -197,14 +197,16 @@
 
     // 切換顯示對應的表單區塊（寫法同 ICSAdd）
     function toggleICSFields(ts) {
-        var deptSelect = ts || document.getElementById('dept');
+        var form = document.getElementById('updateForm');
+        var deptSelect = ts || (form ? form.querySelector('#dept') : null);
         if (!deptSelect) return;
 
         var dept = deptSelect.value;
 
-        var urlpathRow = document.getElementById('urlpathRow');
-        var icsSecurityRow = document.getElementById('icsSecurityRow');
-        var icsIsoRow = document.getElementById('icsIsoRow');
+        var scope = form || document;
+        var urlpathRow = scope.querySelector('#urlpathRow');
+        var icsSecurityRow = scope.querySelector('#icsSecurityRow');
+        var icsIsoRow = scope.querySelector('#icsIsoRow');
 
         // 隱藏所有區塊
         if (urlpathRow) urlpathRow.style.display = 'none';
@@ -469,7 +471,9 @@
     // 初始化：根據當前 dept 預設值顯示對應區塊（寫法同 ICSAdd）
     function initICSFields() {
         setTimeout(function () {
-            toggleICSFields();
+            var form = document.getElementById('updateForm');
+            var deptSelect = form ? form.querySelector('#dept') : null;
+            toggleICSFields(deptSelect);
         }, 200);
     }
 

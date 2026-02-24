@@ -275,3 +275,10 @@ Upload/
 *.rar
 *.7z
 *.webp
+
+# Local temporary scripts/screenshots for Playwright manual checks
+tmp/playwright/
+memory-bank/
+*.md
+package-lock.json
+package.json

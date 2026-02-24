@@ -84,7 +84,7 @@ SET @SkipRows = (@PageNo - 1) * @PageSize
     WHERE [type] = '1050' 
       AND [type_name] IN (N'部門網頁', N'分店網頁')
       AND (@data1 IS NULL OR @data1 = '' OR data1 LIKE '%' + @data1 + '%')
-      AND (@data2 IS NULL OR @data2 = '' OR data2 LIKE '%' + @data2 + '%')
+      AND (@code_name IS NULL OR @code_name = '' OR code_name LIKE '%' + @code_name + '%')
 ), Filtered AS
 (
     SELECT TB.*
@@ -110,9 +110,9 @@ ORDER BY RowNum
                 request.PageNo,
                 request.PageSize,
                 request.data1,
-                request.data2
+                request.code_name
             });
-            
+
             int totalCount = 0;
             if (list.Count > 0)
             {
@@ -121,7 +121,7 @@ ORDER BY RowNum
 
             var pagedList = new PagedListModel<ParaModel>(list, request.PageNo, request.PageSize, totalCount);
             ViewBag.QueryModel = request;
-            
+
             return PartialView("IndexQuery", pagedList);
         }
 
@@ -333,7 +333,7 @@ CASE WHEN [type_name] = N'部門網頁' THEN data2 ELSE code_name END
         {
             var existsSql = @"SELECT TOP 1 * FROM dbo.para_permission WITH(NOLOCK) WHERE deleted = 0 AND emid = @emid AND code_name = @code_name";
 
-            var exists = QuerySingle<ParaPermissionModel>(existsSql,new { emid, code_name });
+            var exists = QuerySingle<ParaPermissionModel>(existsSql, new { emid, code_name });
             if (exists != null)
             {
                 return Json(Fail("權限已存在"));
@@ -403,8 +403,8 @@ ORDER BY
 CASE WHEN [type_name] = N'部門網頁' THEN 1 ELSE 2 END,
 CASE WHEN [type_name] = N'部門網頁' THEN data2 ELSE code_name END
 ";
-            ViewData["Paras"] =  Query<ParaModel>(sql, new { codeNames = codeNames });
-             
+            ViewData["Paras"] = Query<ParaModel>(sql, new { codeNames = codeNames });
+
             return View(new ContentModel { is_show = "Y" });
         }
 
@@ -831,7 +831,7 @@ AND (is_show = 'Y')
                     return Json(Fail("請設定URL連結"));
                 }
             }
-         
+
             var sql = @"
 UPDATE content 
 SET page = @page, subtype = @subtype, subject = @subject, is_show = @is_show, url = @url, content = @content
@@ -876,7 +876,7 @@ WHERE subject_id = @subject_id AND subtype <> 'd_topbtn'
 
                 // 生成日期目錄（yyyyMMdd）
                 var dateFolder = System.DateTime.Now.ToString("yyyyMMdd");
-                
+
                 // 生成簡短亂碼文件名（8位隨機字符）
                 var randomString = System.Guid.NewGuid().ToString("N").Substring(0, 8);
                 var originalExtension = System.IO.Path.GetExtension(file.FileName);
@@ -1307,8 +1307,36 @@ VALUES
             {
                 data.IcsGroup = new IcsGroupModel();
             }
-            data.IcsGroup.list = QueryInternal<IcsListModel>(@"SELECT *, DesNo AS des_no FROM ics_list WITH (NOLOCK) WHERE DesNo = @des_no AND Deleted = 0", new { des_no }) ?? new List<IcsListModel>();
-            data.IcsGroup.uploads = QueryInternal<IcsUploadModel>(@"SELECT *, DesNo AS des_no FROM ics_upload WITH (NOLOCK) WHERE DesNo = @des_no AND Deleted = 0", new { des_no }) ?? new List<IcsUploadModel>();
+            data.IcsGroup.list = QueryInternal<IcsListModel>(@"
+SELECT
+    ListID,
+    DesNo AS des_no,
+    Category,
+    doc_no AS DocNo,
+    doc_name AS DocName,
+    doc_url AS DocUrl,
+    attachment_info AS AttachmentInfo,
+    main_user AS MainUser,
+    Remark,
+    Deleted,
+    create_date AS CreateDate,
+    create_user AS CreateUser
+FROM ics_list WITH (NOLOCK)
+WHERE DesNo = @des_no
+", new { des_no }) ?? new List<IcsListModel>();
+            data.IcsGroup.uploads = QueryInternal<IcsUploadModel>(@"
+SELECT
+    updateID AS UpdateID,
+    DesNo AS des_no,
+    file_name AS FileName,
+    file_url AS FileUrl,
+    file_content_type AS FileContentType,
+    Deleted,
+    create_date AS CreateDate,
+    create_user AS CreateUser
+FROM ics_upload WITH (NOLOCK)
+WHERE DesNo = @des_no
+", new { des_no }) ?? new List<IcsUploadModel>();
 
             return View(data);
         }
@@ -1385,8 +1413,9 @@ WHERE des_no = @des_no
                             var updateSql = @"
 UPDATE ics_list
 SET Category = @Category,
-    DocName = @Content,
-    DocUrl = @DocUrl
+    doc_name = @Content,
+    doc_url = @DocUrl,
+    Deleted = 0
 WHERE ListID = @ListID
 ";
                             ExecuteInternal(updateSql, new
@@ -1402,7 +1431,7 @@ WHERE ListID = @ListID
                             // 新增資料
                             var insertSql = @"
 INSERT INTO ics_list
-(DesNo, Category, DocName, DocUrl, CreateUser, CreateDate, Deleted)
+(DesNo, Category, doc_name, doc_url, create_user, create_date, Deleted)
 VALUES
 (@DesNo, @Category, @Content, @DocUrl, @CreateUser, GETDATE(), 0)
 ";
@@ -1451,7 +1480,8 @@ SET Category = @Category,
     doc_url = @DocUrl,
     attachment_info = @AttachmentInfo,
     main_user = @MainUser,
-    Remark = @Remark
+    Remark = @Remark,
+    Deleted = 0
 WHERE ListID = @ListID
 ";
                             ExecuteInternal(updateSql, new

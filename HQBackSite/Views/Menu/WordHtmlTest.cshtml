@@ -1,0 +1,82 @@
+@{
+    ViewBag.Title = "Word轉HTML測試";
+    ViewBag.CurrentModule = "WORD_HTML_TEST";
+}
+
+<div class="card mt-2">
+    <div class="card-header">
+        <strong>Word 轉靜態 HTML 測試</strong>
+    </div>
+    <div class="card-body">
+        <form id="wordConvertForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="wordFile">上傳 Word 檔案（僅支援 .docx）</label>
+                <input id="wordFile" name="file" type="file" class="form-control" accept=".docx" />
+            </div>
+            <button id="submitBtn" type="submit" class="btn btn-primary">上傳並轉換</button>
+        </form>
+
+        <hr />
+
+        <div id="convertResult" style="display:none;">
+            <p class="mb-2">
+                轉換成功：
+                <a id="previewLink" href="#" target="_blank" rel="noopener">開啟預覽頁</a>
+            </p>
+            <iframe id="previewFrame" style="width:100%;height:620px;border:1px solid #ddd;"></iframe>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const form = document.getElementById('wordConvertForm');
+            const fileInput = document.getElementById('wordFile');
+            const submitBtn = document.getElementById('submitBtn');
+            const resultBlock = document.getElementById('convertResult');
+            const previewLink = document.getElementById('previewLink');
+            const previewFrame = document.getElementById('previewFrame');
+
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    alert('請先選擇檔案');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+
+                submitBtn.disabled = true;
+                const originalText = submitBtn.innerText;
+                submitBtn.innerText = '轉換中...';
+
+                try {
+                    const response = await fetch('/Menu/WordHtmlConvert', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const text = await response.text();
+                    const result = JSON.parse(text);
+                    if (result.code !== 1 || !result.data || !result.data.previewUrl) {
+                        alert(result.message || '轉換失敗');
+                        return;
+                    }
+
+                    const previewUrl = result.data.previewUrl;
+                    previewLink.href = previewUrl;
+                    previewFrame.src = previewUrl;
+                    resultBlock.style.display = 'block';
+                } catch (err) {
+                    alert('轉換失敗：' + err.message);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalText;
+                }
+            });
+        })();
+    </script>
+}

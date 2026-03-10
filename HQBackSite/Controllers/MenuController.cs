@@ -1,7 +1,12 @@
 using HQBackSite.Attributes;
 using HQBackSite.Models;
+using HQBackSite.Utils;
+using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 
 namespace HQBackSite.Controllers
@@ -9,6 +14,11 @@ namespace HQBackSite.Controllers
     [BackSiteAuthorize]
     public class MenuController : BaseController
     {
+        private const int WordUploadMaxBytes = 20 * 1024 * 1024; // 20 MB
+        private static readonly Regex GeneratedHtmlFilePattern = new Regex(
+            "^[A-Za-z0-9_.-]+\\.html$",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         #region Testable Wrappers
 
         protected virtual string GetCurrentAccount()
@@ -58,6 +68,49 @@ AND ISNULL(code_name, '') <> ''
 ";
 
             return QueryInternal<string>(sql) ?? new List<string>();
+        }
+
+        protected virtual string MapPathInternal(string virtualPath)
+        {
+            return Server.MapPath(virtualPath);
+        }
+
+        protected virtual void EnsureDirectoryInternal(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+        }
+
+        protected virtual void SavePostedFileInternal(System.Web.HttpPostedFileBase file, string fullPath)
+        {
+            file.SaveAs(fullPath);
+        }
+
+        protected virtual string ConvertWordToHtmlInternal(string docxPath, string imageOutputDirectory, string imageUrlPrefix, bool forcePdfHyperlinks)
+        {
+            return WordHtmlConverter.ConvertDocxToHtml(docxPath, imageOutputDirectory, imageUrlPrefix, forcePdfHyperlinks);
+        }
+
+        protected virtual void WriteFileTextInternal(string fullPath, string content)
+        {
+            System.IO.File.WriteAllText(fullPath, content, Encoding.UTF8);
+        }
+
+        protected virtual bool FileExistsInternal(string fullPath)
+        {
+            return System.IO.File.Exists(fullPath);
+        }
+
+        protected virtual string ReadFileTextInternal(string fullPath)
+        {
+            return System.IO.File.ReadAllText(fullPath, Encoding.UTF8);
+        }
+
+        protected virtual System.DateTime GetNowInternal()
+        {
+            return System.DateTime.Now;
         }
 
         #endregion
@@ -909,6 +962,114 @@ WHERE subject_id = @subject_id AND subtype <> 'd_topbtn'
             }
         }
 
+        [HttpGet]
+        public ActionResult WordHtmlTest()
+        {
+            // 左側選單高亮所需的模組代碼
+            ViewBag.CurrentModule = "WORD_HTML_TEST";
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult WordHtmlConvert()
+        {
+            try
+            {
+                // 1) 基本檢查：至少要有一個上傳檔案
+                if (Request.Files.Count == 0)
+                {
+                    return Json(Fail("請先選擇要上傳的 Word 檔案"));
+                }
+
+                var file = Request.Files[0];
+                // 2) 內容檢查：不可空檔
+                if (file == null || file.ContentLength <= 0)
+                {
+                    return Json(Fail("上傳檔案不可為空"));
+                }
+
+                // 3) 大小限制：20MB
+                if (file.ContentLength > WordUploadMaxBytes)
+                {
+                    return Json(Fail("檔案大小不可超過 20MB"));
+                }
+
+                // 4) 格式限制：目前僅支援 .docx
+                var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+                if (extension != ".docx")
+                {
+                    return Json(Fail("目前僅支援 .docx 檔案"));
+                }
+
+                var now = GetNowInternal();
+                var dateFolder = now.ToString("yyyyMMdd");
+                var token = System.Guid.NewGuid().ToString("N");
+                var sourceFileName = $"{now:yyyyMMddHHmmss}_{token.Substring(0, 8)}{extension}";
+
+                var sourceDir = MapPathInternal($"~/App_Data/word-upload/{dateFolder}/");
+                EnsureDirectoryInternal(sourceDir);
+
+                // 5) 先保存原始 Word 檔，再進行轉換
+                var sourcePath = Path.Combine(sourceDir, sourceFileName);
+                SavePostedFileInternal(file, sourcePath);
+
+                var imageFolderName = token.Substring(0, 8);
+                var imageOutputDirectory = MapPathInternal($"~/images/word-html/{dateFolder}/{imageFolderName}/");
+                EnsureDirectoryInternal(imageOutputDirectory);
+                var imageUrlPrefix = $"/images/word-html/{dateFolder}/{imageFolderName}/";
+
+                // 6) 執行 Word->HTML，並啟用超連結 PDF 導向改寫
+                var html = ConvertWordToHtmlInternal(sourcePath, imageOutputDirectory, imageUrlPrefix, true);
+                if (string.IsNullOrWhiteSpace(html))
+                {
+                    return Json(Fail("轉換失敗：產出的 HTML 內容為空"));
+                }
+
+                var targetDir = MapPathInternal("~/Views/GeneratedHtml/");
+                EnsureDirectoryInternal(targetDir);
+
+                // 7) 寫出靜態 HTML 成品，供預覽路由讀取
+                var targetFileName = $"{now:yyyyMMddHHmmss}_{token.Substring(0, 8)}.html";
+                var targetPath = Path.Combine(targetDir, targetFileName);
+                WriteFileTextInternal(targetPath, html);
+
+                // 8) 回傳預覽網址給前端
+                var previewUrl = "/Menu/WordHtmlPreview?file=" + System.Web.HttpUtility.UrlEncode(targetFileName);
+                return Json(SuccessData(new
+                {
+                    fileName = targetFileName,
+                    previewUrl
+                }));
+            }
+            catch (System.Exception ex)
+            {
+                Logger.Error(ex, "[WORD_HTML_CONVERT_ERROR]");
+                return Json(Fail($"Word 轉換失敗：{ex.Message}"));
+            }
+        }
+
+        [HttpGet]
+        public ActionResult WordHtmlPreview(string file)
+        {
+            // 僅允許安全檔名，避免 path traversal
+            if (string.IsNullOrWhiteSpace(file) || !GeneratedHtmlFilePattern.IsMatch(file))
+            {
+                return HttpNotFound();
+            }
+
+            var rootPath = MapPathInternal("~/Views/GeneratedHtml/");
+            var fullPath = Path.Combine(rootPath, file);
+
+            if (!FileExistsInternal(fullPath))
+            {
+                return HttpNotFound();
+            }
+
+            // 直接輸出 HTML 內容，不透過 Razor 引擎編譯
+            var html = ReadFileTextInternal(fullPath);
+            return Content(html, "text/html", Encoding.UTF8);
+        }
+
         #endregion
 
         #region 訊息設定
@@ -1583,7 +1744,14 @@ WHERE p.user_id = @userId
 ORDER BY m.menu_code
 ";
 
-                var menuCodes = QueryInternal<string>(sql, new { userId });
+                var menuCodes = QueryInternal<string>(sql, new { userId }) ?? new List<string>();
+                var hasContentPermission = menuCodes.Any(code => string.Equals(code, "CONTENT", System.StringComparison.OrdinalIgnoreCase));
+                var hasWordHtmlPermission = menuCodes.Any(code => string.Equals(code, "WORD_HTML_TEST", System.StringComparison.OrdinalIgnoreCase));
+                if (hasContentPermission && !hasWordHtmlPermission)
+                {
+                    // Keep test page visible for users who already manage content.
+                    menuCodes.Add("WORD_HTML_TEST");
+                }
 
                 var response = new UserMenuPermissionsResponse
                 {
@@ -1672,6 +1840,14 @@ ORDER BY m.menu_code
                         Text = "國際認證規範公告",
                         ModuleId = "CERTIFICATION",
                         Action = "ICS",
+                        Controller = "Menu"
+                    },
+                    new MenuItemModel
+                    {
+                        Id = 7,
+                        Text = "Word轉HTML測試",
+                        ModuleId = "WORD_HTML_TEST",
+                        Action = "WordHtmlTest",
                         Controller = "Menu"
                     }
                 }

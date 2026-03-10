@@ -204,6 +204,7 @@
     <Compile Include="Models\IcsUploadModel.cs" />
     <Compile Include="Models\MenuGroupModel.cs" />
     <Compile Include="Models\MenuItemModel.cs" />
+    <Compile Include="Models\MenuResourceModel.cs" />
     <Compile Include="Models\MenuViewModel.cs" />
     <Compile Include="Models\NewsModel.cs" />
     <Compile Include="Models\PagedListModel.cs" />

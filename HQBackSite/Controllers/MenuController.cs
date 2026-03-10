@@ -678,7 +678,8 @@ ORDER BY RowNum
             return PartialView("ContentQuery", pagedList);
         }
 
-        public ActionResult GetCategories(string dept)
+        public ActionResult GetCategories   
+        (string dept)
         {
             if (string.IsNullOrWhiteSpace(dept))
             {
@@ -1554,6 +1555,53 @@ VALUES
             }
         }
 
+        /// <summary>
+        /// 取得用戶菜單權限（API）
+        /// </summary>
+        [HttpGet]
+        public ActionResult GetUserMenuPermissions(string userId)
+        {
+            try
+            {
+                // 如果沒有傳 userId，從 Cookie 取得
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    userId = GetCurrentAccount();
+                }
+
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    return base.Json(Fail("無法取得用戶資訊"));
+                }
+
+                var sql = @"
+SELECT DISTINCT m.menu_code
+FROM [dbo].[t_user_menu_permission] p WITH(NOLOCK)
+INNER JOIN [dbo].[t_menu_resource] m WITH(NOLOCK) ON p.menu_id = m.id
+WHERE p.user_id = @userId
+  AND m.active = 1
+ORDER BY m.menu_code
+";
+
+                var menuCodes = QueryInternal<string>(sql, new { userId });
+
+                var response = new UserMenuPermissionsResponse
+                {
+                    UserId = userId,
+                    MenuCodes = menuCodes?.ToArray() ?? new string[0]
+                };
+
+                // print response for debugging
+                Logger.Info($"UserMenuPermissionsResponse: {JsonConvert.SerializeObject(response)}");
+
+                return base.Json(SuccessData(response));
+            }
+            catch (System.Exception ex)
+            {
+                return base.Json(Fail($"查詢權限失敗：{ex.Message}"));
+            }
+        }
+
         [ChildActionOnly]
         public ActionResult GetMenu(string currentModule = null)
         {
@@ -1573,7 +1621,7 @@ VALUES
                         {
                             Id = 1,
                             Text = "選單設定",
-                            ModuleId = "menuSetting",
+                            ModuleId = "MENU_SETTING",
                             Action = "Index",
                             Controller = "Menu"
                         },
@@ -1581,7 +1629,7 @@ VALUES
                         {
                             Id = 2,
                             Text = "選單權限設定",
-                            ModuleId = "menuPermission",
+                            ModuleId = "MENU_PERMISSION",
                             Action = "Permission",
                             Controller = "Menu"
                         }
@@ -1598,7 +1646,7 @@ VALUES
                     {
                         Id = 3,
                         Text = "選單類別設定",
-                        ModuleId = "contentCategory",
+                        ModuleId = "CONTENT_CATEGORY",
                         Action = "Category",
                         Controller = "Menu"
                     },
@@ -1606,7 +1654,7 @@ VALUES
                     {
                         Id = 4,
                         Text = "內容設定",
-                        ModuleId = "content",
+                        ModuleId = "CONTENT",
                         Action = "Content",
                         Controller = "Menu"
                     },
@@ -1614,7 +1662,7 @@ VALUES
                     {
                         Id = 5,
                         Text = "訊息設定",
-                        ModuleId = "message",
+                        ModuleId = "MESSAGE",
                         Action = "Message",
                         Controller = "Menu"
                     },
@@ -1622,7 +1670,7 @@ VALUES
                     {
                         Id = 6,
                         Text = "國際認證規範公告",
-                        ModuleId = "certification",
+                        ModuleId = "CERTIFICATION",
                         Action = "ICS",
                         Controller = "Menu"
                     }

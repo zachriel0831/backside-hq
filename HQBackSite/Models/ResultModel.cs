@@ -7,8 +7,10 @@
         public object Data { get; set; } = null;
     }
 
-    public class ResultDataModel<T> : ResultModel
+    public class ResultDataModel<T>
     {
-        public new T Data { get; set; }
+        public int Code { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public T Data { get; set; }
     }
 }

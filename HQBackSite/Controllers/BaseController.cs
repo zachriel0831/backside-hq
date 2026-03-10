@@ -29,12 +29,10 @@ namespace HQBackSite.Controllers
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 DateFormatString = "yyyy-MM-dd HH:mm:ss"
             };
-            return new ContentResult
-            {
-                Content = JsonConvert.SerializeObject(data, settings),
-                ContentType = "application/json",
-                ContentEncoding = Encoding.UTF8
-            };
+            
+            var json = JsonConvert.SerializeObject(data, settings);
+            
+            return Content(json, "application/json", Encoding.UTF8);
         }
 
         protected ResultModel Success()

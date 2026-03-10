@@ -11,7 +11,7 @@
             <ul class="nav-submenu">
                 @foreach (var item in group.Items)
                 {
-                    <li class="nav-item">
+                    <li class="nav-item" id="menu-@item.ModuleId" data-menu-code="@item.ModuleId">
                         <a class="nav-link @(!string.IsNullOrEmpty(Model.CurrentModule) && item.ModuleId == Model.CurrentModule ? "active" : "")" 
                            data-module-id="@item.ModuleId"
                            href="@Url.Action(item.Action, item.Controller)">

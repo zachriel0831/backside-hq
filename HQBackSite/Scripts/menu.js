@@ -51,8 +51,8 @@
     .then(function(result) {
       // BaseController.Json() 使用 CamelCasePropertyNamesContractResolver
       console.log('[菜單權限] API 回傳:', result);
-      if (result.Code === 1 && result.Data && result.Data.MenuCodes) {
-        var allowedMenuCodes = result.Data.MenuCodes;
+      if (result.code === 1 && result.data && result.data.menuCodes) {
+          var allowedMenuCodes = result.data.menuCodes;
         
         // 重新取得所有菜單項目（確保最新）
         var currentMenuItems = document.querySelectorAll('[data-menu-code]');

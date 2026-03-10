@@ -1,5 +1,6 @@
 using HQBackSite.Attributes;
 using HQBackSite.Models;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -1577,7 +1578,7 @@ VALUES
                 var sql = @"
 SELECT DISTINCT m.menu_code
 FROM [dbo].[t_user_menu_permission] p WITH(NOLOCK)
-INNER JOIN [dbo].[t_menu_resource] m WITH(NOLOCK) ON p.menu_id = m.id
+INNER JOIN [dbo].[t_user_menu_resource] m WITH(NOLOCK) ON p.menu_id = m.id
 WHERE p.user_id = @userId
   AND m.active = 1
 ORDER BY m.menu_code

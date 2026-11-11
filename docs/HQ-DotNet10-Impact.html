@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HQ 系統升級 .NET 10｜改動點與風險</title>
+  <style>
+    :root { color-scheme: light; font: 17px/1.65 "Microsoft JhengHei", "PingFang TC", sans-serif; color: #1e2932; background: #f3f5f5; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { max-width: 58rem; margin: 2rem auto; padding: 2.3rem 3.2rem; background: #fff; border-top: .32rem solid #166258; }
+    h1, h2 { line-height: 1.32; color: #163832; }
+    h1 { font-size: clamp(1.55rem, 4vw, 2.05rem); margin: 0 0 1.1rem; }
+    h2 { font-size: 1.19rem; margin: 1.65rem 0 .55rem; padding-top: .8rem; border-top: 1px solid #cbd6d4; }
+    ul { margin: 0; padding-inline-start: 1.35rem; }
+    li { padding-left: .15rem; margin: .48rem 0; overflow-wrap: anywhere; }
+    li::marker, a { color: #155e54; }
+    strong { color: #193b36; }
+    code { font: .91em/1.4 Consolas, monospace; }
+    a { text-underline-offset: .15em; }
+    @media (max-width: 650px) { main { margin: 0; padding: 1.3rem 1.15rem; } }
+    @media print { :root { font-size: 10.5pt; background: white; } main { margin: 0; max-width: none; padding: 0; border: 0; } h2 { break-after: avoid; } li { break-inside: avoid; } }
+  </style>
+</head>
+<body>
+<main>
+  <h1>HQ 系統升級 .NET 10｜改動點與風險</h1>
+  <ul>
+    <li><strong>升級範圍：</strong>HQ 員工入口、舊後台及 Web API 現行為 .NET Framework 4.6.1；HQBackSite 新後台及其測試為 4.7.2。兩個網站都依賴 <code>System.Web</code>，須移植到 ASP.NET Core 10，並將測試專案改為 <code>net10.0</code>。<a href="https://learn.microsoft.com/en-us/aspnet/core/migration/fx-to-core/?view=aspnetcore-10.0">Microsoft 移植指南</a></li>
+    <li><strong>盤點範圍：</strong>截至 2026-11-11，已核對原始碼、專案與發布設定。兩站 NuGet 清單分別有 34、41 筆，合計 54 種不同套件，另有 3 個測試套件。正式站組態、歷史附件及 .NET 10 執行結果尚待驗證。</li>
+  </ul>
+
+  <section>
+    <h2>必須替換或升級的套件</h2>
+    <ul>
+      <li><strong>MVC 與 Razor：</strong>兩站的 <code>Microsoft.AspNet.Mvc</code> 5.2.4／5.2.7、<code>Microsoft.AspNet.Razor</code> 與 <code>Microsoft.AspNet.WebPages</code> 3.2.4／3.2.7、對應 zh-Hant 語系包，改用 ASP.NET Core 10 共用框架及 Razor SDK。表單驗證的繁中訊息需一併驗收。</li>
+      <li><strong>HQ Web API：</strong><code>Microsoft.AspNet.WebApi</code> 5.2.4 及 Core、WebHost、Client、HelpPage、對應語系包移出舊管線。控制器改用 Core MVC，原 API 說明頁如仍供使用，需保留入口或提供替代文件。<a href="https://learn.microsoft.com/en-us/aspnet/core/migration/fx-to-core/areas/webapi">Microsoft Web API 移植指南</a></li>
+      <li><strong>編譯、打包與追蹤：</strong>移除 <code>Microsoft.CodeDom.Providers.DotNetCompilerPlatform</code> 2.0.0／2.0.1、<code>Microsoft.Web.Infrastructure</code> 1.0.0.0。以靜態資源取代 <code>Microsoft.AspNet.Web.Optimization</code> 1.1.3 及語系包、WebGrease 1.6.0、Antlr 3.5.0.2；HQ 的 <code>Microsoft.AspNet.TelemetryCorrelation</code> 1.0.0 若需延續請求追蹤，改接 Core 診斷管線。</li>
+      <li><strong>PDF 連結擷取：</strong>HQ 的 iTextSharp 5.5.13.3 僅提供 .NET Framework 組件，並依賴 BouncyCastle 1.8.9。換用支援現代 .NET 的 PDF 函式庫，例如 <code>itext</code>，依選定套件確認授權及加密相依。以實際公文分別核對 PDF 超連結註解與純文字網址，避免漏列附件。<a href="https://www.nuget.org/packages/iTextSharp/5.5.13.3">舊套件</a> · <a href="https://www.nuget.org/packages/itext">替代套件與授權</a></li>
+      <li><strong>HTML 解析與 JSON：</strong>AngleSharp 1.1.2 升至含已知修補的 1.5.0 以上相容版。兩站 Newtonsoft.Json 11.0.1／12.0.2 亦有已知公告；若保留既有 JSON 格式，統一採修補的 13.x，使用 Core MVC 整合時配 <code>Microsoft.AspNetCore.Mvc.NewtonsoftJson</code> 10.0.x 並滿足其相依下限。<a href="https://github.com/AngleSharp/AngleSharp/blob/devel/CHANGELOG.md">AngleSharp 修補紀錄</a> · <a href="https://www.nuget.org/packages/Newtonsoft.Json/12.0.2">Json.NET 公告</a> · <a href="https://www.nuget.org/packages/Microsoft.AspNetCore.Mvc.NewtonsoftJson/10.0.0">Core 整合套件</a></li>
+      <li><strong>SQL Server 驅動：</strong>兩站使用 Framework 內建 <code>System.Data.SqlClient</code>，移植時須明列驅動。建議採 <code>Microsoft.Data.SqlClient</code>；新版預設要求加密，若主機名或憑證信任鏈不符，入口、員工查詢與電子報可能同時無法連線。<a href="https://learn.microsoft.com/en-us/sql/connect/ado-net/encryption-and-certificate-validation?view=sql-server-ver17">Microsoft 加密與憑證規則</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>可沿用或解除舊版鎖定的套件</h2>
+    <ul>
+      <li><strong>後台資料、日誌與登入：</strong>Dapper 2.1.66、NLog 4.7.15、<code>System.IdentityModel.Tokens.Jwt</code> 與 <code>Microsoft.IdentityModel.*</code> 8.15.0 已有相容資產，可先沿用版本。將 NLog 寫檔、輪替與篩選設定遷出舊 Web.config；JWT 的 Tokens、JsonWebTokens、Logging、Abstractions 由同一版系解析。<a href="https://www.nuget.org/packages/Dapper/2.1.66">Dapper</a> · <a href="https://www.nuget.org/packages/NLog/4.7.15">NLog</a> · <a href="https://www.nuget.org/packages/System.IdentityModel.Tokens.Jwt/8.15.0">JWT</a></li>
+      <li><strong>Active Directory：</strong><code>System.DirectoryServices</code> 已列 10.0.2，後台專案仍引用 Framework 組件。保留 AD 時改為套件引用，並以 Windows 站台身分驗證網域連通及密碼驗證流程。<a href="https://www.nuget.org/packages/System.DirectoryServices/10.0.2">支援平台</a></li>
+      <li><strong>基礎相依：</strong>重新解析 <code>System.Buffers</code>、<code>System.Memory</code>、<code>System.Numerics.Vectors</code>、<code>System.Runtime.CompilerServices.Unsafe</code>、<code>System.Diagnostics.DiagnosticSource</code>、<code>System.Threading.Tasks.Extensions</code>、<code>System.ValueTuple</code>、<code>System.Text.Json</code>、<code>System.Text.Encodings.Web</code>、<code>System.Text.Encoding.CodePages</code>。以 .NET 10 提供的組件為準，僅保留程式或相依套件仍需要的引用。</li>
+      <li><strong>其他間接相依：</strong><code>Microsoft.Bcl.AsyncInterfaces</code>、<code>Microsoft.Bcl.TimeProvider</code>、<code>Microsoft.Extensions.Logging.Abstractions</code>、<code>System.IO.FileSystem.AccessControl</code>、<code>System.Security.AccessControl</code>、<code>System.Security.Principal.Windows</code> 同步解除 Framework 時代的版本鎖定；保留 AD 時核對 Windows 相依。</li>
+      <li><strong>前端套件：</strong>jQuery、Bootstrap、Modernizr 2.8.3、jQuery.Validation 1.17.0、Microsoft.jQuery.Unobtrusive.Validation 3.2.11 可與 .NET 分開升級。HQ 使用 Bootstrap 3.3.7，jQuery 宣告 3.3.1、主 bundle 對應檔為 1.9.1；新後台使用 jQuery 3.4.1，Bootstrap 宣告 3.4.1、實檔為 5.3.3。按清單重裝會改變選單、表單或版型。</li>
+      <li><strong>編輯器與外部資源：</strong>新後台編輯頁使用 CDN 的 CKEditor 4.22.1，另載入 AJAX 外掛與圖示。CKEditor 4 開源版已停止維護，續用支援版或更換編輯器須另估授權及內容相容性。驗收內網載入、舊文章格式、貼圖與儲存。<a href="https://ckeditor.com/legal/ckeditor-licensing-options/">原廠支援與授權</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>HQ 員工入口、舊後台與 API</h2>
+    <ul>
+      <li><strong>啟動與路由：</strong>將 <code>Global.asax</code>、<code>App_Start</code>、全域例外處理移入 <code>Program.cs</code>。3 個業務 MVC、10 個 Web API 控制器須保留首頁 <code>/Hq/Index</code>、舊後台及 <code>/api/{controller}/{action}/{id?}</code>；明訂部門頁既有 POST、清快取的 GET／POST，避免舊網址回 404 或 405。</li>
+      <li><strong>API 格式：</strong>10 個前端業務腳本直接讀取 <code>res.Table</code>。改用 <code>ControllerBase</code> 與 Core 回應型別，保留表名大小寫、空資料及數值回傳；啟用自動模型驗證時須核對 HTTP 400 與既有錯誤格式。Core 預設 JSON 沒有 DataSet 轉換器，直接切換會使清單失效。<a href="https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/supported-types#systemdata-namespace">Microsoft 型別支援</a></li>
+      <li><strong>舊後台登入：</strong><code>FormsAuthenticationTicket</code> 改為 Core Cookie 與帳號 Claim。程式實際簽發 30 分鐘、非持久票證；核對切換時重登、到期、登出、6 個受保護頁面，以及新增公告記錄的建立者。</li>
+      <li><strong>舊編輯器上傳：</strong>將 UEditor 的 <code>controller.ashx</code> 與 8 個支援類別改成 Core 端點，保留原網址、欄位及回應。涵蓋設定、圖片／塗鴉／影片／檔案上傳、圖檔清單、檔案清單及遠端圖片擷取；沿用原檔案存取限制，解除對獨立 Newtonsoft.Json DLL 的引用。<a href="https://learn.microsoft.com/en-us/aspnet/core/migration/fx-to-core/areas/http-handlers?view=aspnetcore-10.0">Microsoft Handler 移植指南</a></li>
+      <li><strong>外部公文與快取：</strong>保留 HTML／PDF 下載的 20 秒逾時、重新導向後的相對連結與電子報預覽／正式網址。將 <code>System.Runtime.Caching</code> 的 5 組快取移至 <code>IMemoryCache</code> 等相容實作，維持活動 3 小時、其餘 12 小時與手動清除；若採多執行個體，單機清除會留下舊內容。</li>
+      <li><strong>頁面與舊網址：</strong>HQ 有 20 個網站 Razor 檔、19 個 API 說明頁 Razor 檔。替換 <code>Scripts.Render</code>、<code>Styles.Render</code>，保留腳本順序、站根資源、附件及連往外部 .aspx 頁面的網址。傳真及餐廳有 CP950 靜態 HTML，對應 Razor 檔為 UTF-8 且宣告 Big5，須分別驗中文顯示。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>HQBackSite 新後台</h2>
+    <ul>
+      <li><strong>登入與權限｜高風險：</strong>現行登入未呼叫 AD 密碼比對，登入時的權限查詢回傳固定非空清單，部分內容查詢在無明細權限時會擴大範圍。切換前須確認正式身分來源及部門授權，以有效／無效帳密、無權與跨部門帳戶驗證登入、直接進頁及寫入操作。</li>
+      <li><strong>登入狀態：</strong>移植 <code>Authorization</code> JWT Cookie、帳號 Claim、一天效期及登出；簽章金鑰移至受控設定，決定舊 Cookie 延續或統一重登。本機登入例外不可因反向代理而套用到一般使用者。保留頁面轉登入、AJAX 回 <code>code=-1</code>；Core 10 的 Cookie 驗證對已識別 API 預設回 401／403。<a href="https://learn.microsoft.com/en-us/aspnet/core/security/authentication/api-endpoint-auth?view=aspnetcore-10.0">Microsoft 驗證行為</a></li>
+      <li><strong>管理頁與表單：</strong>新後台有 31 個 Razor 檔，<code>MenuController</code> 有 44 個回傳 ActionResult 的方法。2 個子動作改為頁內元件；替換 <code>Html.Action</code>、<code>Ajax.BeginForm</code>。分別處理 JSON、表單及 multipart 綁定，保留部分頁更新、<code>code/message/data</code>、camelCase 與日期 <code>yyyy-MM-dd HH:mm:ss</code>。</li>
+      <li><strong>內容、公告與 ICS：</strong>驗收選單授權、部門分類、內容與跑馬燈修改後能在 HQ 正確顯示。ICS 將表單內 JSON 分寫 <code>news</code> 與 <code>ics_list</code>，現行多次寫入未共用交易；須處理中途失敗，核對切換類別後明細新增、更新及軟刪除結果。</li>
+      <li><strong>附件與 Word：</strong>以 <code>IFormFile</code> 與明確的儲存目錄取代 <code>Request.Files</code>、<code>Server.MapPath</code>。一般上傳程式上限 50 MiB，Word 僅收 .docx、上限 20 MiB；IIS、應用主機及表單上限均須容納 multipart 開銷，否則合法檔案會在進入程式前遭拒。<a href="https://learn.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-10.0">Microsoft 上傳限制</a></li>
+      <li><strong>Word 預覽：</strong>轉換器採內建 ZIP/XML，可保留。原始 Word 須維持私有，產出 HTML 由授權預覽端點讀取；保留圖片網址、表格合併與 PDF 連結改寫，非法檔名或缺檔回 404。切換網域時一併核對編輯器內的兩站網址。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>資料庫、發布與驗收風險</h2>
+    <ul>
+      <li><strong>共用 SQL 與設定：</strong>兩站將 <code>ConfigurationManager</code> 改接環境設定，保留主資料庫、EP 員工庫、電子報、測試連線與跨庫查詢的分工。升級本身未發現必須變動資料表的項目；以同一筆後台異動核對前台讀回，並驗 SQL 權限、預覽網址與繁中日期。</li>
+      <li><strong>IIS 與發布：</strong>兩個網站改用 Web SDK、<code>PackageReference</code> 與 .NET 10 發布流程。Framework 相依部署須確認 Windows Server 支援、安裝 .NET 10 Hosting Bundle 並配置 ASP.NET Core Module。以 <code>wwwroot</code> 或指定目錄供應靜態檔，確認原 <code>/images</code> 目錄瀏覽的保留範圍。重設反向代理的 HTTPS／主機名、錯誤頁與操作／例外日誌；檢查日誌可寫、輪替與敏感欄位遮蔽。<a href="https://learn.microsoft.com/en-us/aspnet/core/tutorials/publish-to-iis?view=aspnetcore-10.0">Microsoft IIS 部署</a></li>
+      <li><strong>歷史附件｜高風險：</strong>HQ 現有發布設定會清除目的目錄；專案宣告的發布內容有 74 筆未隨本次盤點檔案提供，含圖片、附件與編輯器 DLL。切換前比對正式站、備份並將使用者上傳與 Word 成品存放於發布目錄以外；以舊文章網址、重新發布及回復演練確認可讀。</li>
+      <li><strong>測試與建置：</strong>測試移除 MVC 5、Razor、WebPages DLL 與 <code>HttpContextBase</code> 模擬，調整 Microsoft.NET.Test.Sdk 17.11.1 及 MSTest.TestAdapter／TestFramework 3.5.2 至支援目標的組合。現有 34 個測試限於後台內容、ICS、Word；需補兩站登入／拒絕、前台 API、真實 SQL、上傳與 IIS 發布後回歸。<a href="https://www.nuget.org/packages/MSTest.TestAdapter/3.5.2">測試套件狀態</a></li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

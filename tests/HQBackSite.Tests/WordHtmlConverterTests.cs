@@ -283,6 +283,33 @@ namespace HQBackSite.Tests
             StringAssert.Contains(html, ">manual</a>");
         }
 
+        [TestMethod]
+        public void ConvertDocxToHtml_WhenTextAndLinkContainSpecialCharacters_ShouldEncodeBoth()
+        {
+            const string documentXml = @"<w:document xmlns:w=""http://schemas.openxmlformats.org/wordprocessingml/2006/main""
+            xmlns:r=""http://schemas.openxmlformats.org/officeDocument/2006/relationships"">
+  <w:body><w:p><w:hyperlink r:id=""rId1"">
+    <w:r><w:t>中文公告 A&amp;B &lt;快訊&gt; &quot;更新&quot; café</w:t></w:r>
+  </w:hyperlink></w:p></w:body>
+</w:document>";
+            const string relationshipsXml = @"<Relationships xmlns=""http://schemas.openxmlformats.org/package/2006/relationships"">
+  <Relationship Id=""rId1"" Type=""http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink""
+                Target=""https://example.com/notice?dept=人資&amp;title=&quot;公告&quot;"" TargetMode=""External"" />
+</Relationships>";
+            var docxPath = CreateDocx(Path.GetTempPath(), documentXml, relationshipsXml, null, null);
+            try
+            {
+                var html = WordHtmlConverter.ConvertDocxToHtml(docxPath);
+
+                StringAssert.Contains(html, "中文公告 A&amp;B &lt;快訊&gt; &quot;更新&quot; caf&#233;");
+                StringAssert.Contains(html, "href=\"https://example.com/notice?dept=人資&amp;title=&quot;公告&quot;\"");
+            }
+            finally
+            {
+                File.Delete(docxPath);
+            }
+        }
+
         private static string CreateDocx(string root, string documentXml, string relationshipsXml, string mediaPath, byte[] mediaBytes)
         {
             var docxPath = Path.Combine(root, Guid.NewGuid().ToString("N") + ".docx");

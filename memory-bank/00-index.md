@@ -16,6 +16,13 @@ This folder stores project knowledge for both humans and AI agents.
 10. `memory-bank/workflows.md` (general workflow reference)
 11. Add module-specific notes under `memory-bank/10-modules/` as needed.
 
+## .NET 10 建置、測試與啟動
+
+- 安裝 .NET 10 SDK，在 repo 根目錄執行 `dotnet build HQ.Modern.slnx -c Release`，建置查詢入口、Word 轉換元件及其測試。
+- 執行 `dotnet test tests/HQ.WordHtml.Tests/HQ.WordHtml.Tests.csproj -c Release --no-build`。原後台測試從 Visual Studio 開發人員命令提示字元執行 `MSBuild tests/HQBackSite.Tests/HQBackSite.Tests.csproj /restore /p:RestorePackagesConfig=true /p:Configuration=Debug`，再執行 `vstest.console tests/HQBackSite.Tests/bin/Debug/net472/HQBackSite.Tests.dll`。兩個測試專案共用 Word 案例。
+- 執行 `dotnet run --project HQ.Portal/HQ.Portal.csproj -- --urls http://127.0.0.1:5182`。測試 `/Home/Restaurant`、`/Home/FaxView` 及原有 `/Areas/tel/restaurant.htm`、`/Areas/tel/fax.htm`。其餘入口、管理與 API 路由仍由原站提供。
+- 執行 `dotnet publish HQ.Portal/HQ.Portal.csproj -c Release` 產出部署檔。餐廳與傳真表沿用員工內網的存取限制，部署時須一併保留傳真表的四個附檔。
+
 ## Suggested Next Files
 - `memory-bank/03-dev-setup.md`
 - `memory-bank/04-coding-standards.md`

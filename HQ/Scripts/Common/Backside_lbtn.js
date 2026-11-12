@@ -27,7 +27,8 @@ var createUl = function (oLayout) {
         'cellspacing': "0"
 
     }).appendTo($divDepartment);
-    $table_lbtn.append($('<tr>').append($('<img>', {
+    var $rows = $('<tbody>').appendTo($table_lbtn);
+    $rows.append($('<tr>').append($('<img>', {
         'height': "45",
         'class': oLayout === oDepartment ? 'td_lbtn_title' : 'tb_lbtn_store',
         'src': oLayout === oDepartment ? '/images/pink/d_left/u_title.gif' : '/images/pink/d_left/u_title_store.gif',
@@ -38,7 +39,7 @@ var createUl = function (oLayout) {
 
     Object.keys(oLayout).forEach(function (val) {
 
-        $table_lbtn.append($('<tr>').append($('<td>', {
+        $rows.append($('<tr>').append($('<td>', {
             'height': "38",
             'id': val,
             'class': 'td_lbtn_vl_line',
@@ -59,7 +60,7 @@ var createUl = function (oLayout) {
             onclick_page(val)
         }))))
     })
-    $table_lbtn.append('<tr> <td height="12" class="td_lbtn_u_h" background="/images/pink/d_left1/u_h.gif"></td></tr >')
+    $rows.append('<tr> <td height="12" class="td_lbtn_u_h" background="/images/pink/d_left1/u_h.gif"></td></tr >')
 };
 var ChangeColor = function (id) {
     $('#' + id).css('background-color', color);
@@ -89,6 +90,8 @@ var onclick_page = function (strDept) {
 $(document).ready(function () {
     initialObject();
 });
-$(window).load(function () {
-    $('#left_btn table tbody tr td button').mouseover().mouseout();
-})
+$(window).on('load', function () {
+    $(document).ready(function () {
+        $('#left_btn table tbody tr td button').mouseover().mouseout();
+    });
+});

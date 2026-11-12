@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="HQ.Portal/HQ.Portal.csproj" />
+  <Project Path="HQ.WordHtml/HQ.WordHtml.csproj" />
+  <Folder Name="/tests/">
+    <Project Path="tests/HQ.WordHtml.Tests/HQ.WordHtml.Tests.csproj" />
+  </Folder>
+</Solution>

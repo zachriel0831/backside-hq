@@ -744,7 +744,11 @@ $(document).ready(function () {
     //    $('.marquee').marquee('toggle');
     //}, 1600);
 });
-$(window).load(function () {
+$(window).on('load', function () {
+    $(document).ready(initializeLoadedHome);
+});
+
+function initializeLoadedHome() {
     var cookie = getCookie('search');
     // 如果有#時 顯示其頁面
     if (window.location.href.indexOf('#') !== -1) {
@@ -773,5 +777,4 @@ $(window).load(function () {
         }
         showNumber.eq(iNow).click(); //模擬觸發數字按鈕的click
     }, 2000); //2000為輪播的時間
-
-});
+}

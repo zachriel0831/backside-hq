@@ -26,9 +26,18 @@
 <main>
   <h1>HQ 系統升級 .NET 10｜改動點與風險</h1>
   <ul>
-    <li><strong>升級範圍</strong>　HQ 員工入口、舊後台與 Web API 使用 .NET Framework 4.6.1，HQBackSite 新後台與測試使用 4.7.2。兩站移植至 ASP.NET Core 10 時須替換 System.Web 網站管線。測試專案直接參考新後台，須提供相容的測試目標。<a href="https://learn.microsoft.com/en-us/aspnet/core/migration/fx-to-core/?view=aspnetcore-10.0">Microsoft 移植指南</a></li>
-    <li><strong>盤點範圍</strong>　截至 2026-11-11，兩站套件清單分別有 34、41 筆，按名稱去重為 54 種，測試專案另有 3 種。以下依現行程式與官方相容性資料判定，正式站設定、歷史檔案及移植後的執行結果待驗。</li>
+    <li><strong>升級範圍</strong>　HQ 員工入口、舊後台與 Web API 使用 .NET Framework 4.6.1，HQBackSite 新後台與原有測試使用 4.7.2。兩站其餘功能移植至 ASP.NET Core 10 時，須替換 System.Web 網站管線。<a href="https://learn.microsoft.com/en-us/aspnet/core/migration/fx-to-core/?view=aspnetcore-10.0">Microsoft 移植指南</a></li>
+    <li><strong>盤點範圍</strong>　2026-11-11 盤點原有兩站套件清單，分別為 34 與 41 筆，共 54 種不同套件。原測試專案另用 3 種測試套件。</li>
   </ul>
+
+  <section>
+    <h2>第一批移植結果（2026-11-12）</h2>
+    <ul>
+      <li><strong>餐廳分機與傳真表</strong>　新的 ASP.NET Core 10 入口已完成建置，提供兩張查詢表。<code>/Home/Restaurant</code> 與 <code>/Home/FaxView</code> 使用 UTF-8，<code>/Areas/tel/restaurant.htm</code> 與 <code>/Areas/tel/fax.htm</code> 保留 Big5。其餘入口、管理頁與 API 仍由原站提供。</li>
+      <li><strong>Word 轉 HTML</strong>　.NET 10 轉換測試 8/8 通過，涵蓋圖片、合併表格、底色、超連結、PDF 網址改寫及繁中與特殊字元。原後台回歸測試 35/35 通過，其中包含相同的 8 個 Word 案例。</li>
+      <li><strong>正式環境待驗</strong>　仍須在員工內網核對通訊資料與歷史附件，驗證實際 SQL 資料庫、AD 身分驗證、IIS 部署及切換失敗時的回復。</li>
+    </ul>
+  </section>
 
   <section>
     <h2>必須替換或升級的套件</h2>
@@ -50,7 +59,7 @@
       <li><strong>Active Directory</strong>　新後台清單有 <code>System.DirectoryServices</code> 10.0.2，專案實際引用 Framework 組件。若正式登入選用 AD 驗密，改為套件引用，部署於受支援的 Windows 主機，驗證網域連通、站台身分及有效／錯誤密碼。<a href="https://github.com/dotnet/runtime/blob/v10.0.0/src/libraries/System.DirectoryServices/src/System.DirectoryServices.csproj">Microsoft 平台實作</a></li>
       <li><strong>基礎相依</strong>　重新解析 <code>System.Buffers</code>、<code>System.Memory</code>、<code>System.Numerics.Vectors</code>、<code>System.Runtime.CompilerServices.Unsafe</code>、<code>System.Diagnostics.DiagnosticSource</code>、<code>System.Threading.Tasks.Extensions</code>、<code>System.ValueTuple</code>、<code>System.Text.Json</code>、<code>System.Text.Encodings.Web</code>、<code>System.Text.Encoding.CodePages</code>。以 .NET 10 提供的組件為準，僅保留程式或相依套件仍需要的引用。</li>
       <li><strong>其他間接相依</strong>　<code>Microsoft.Bcl.AsyncInterfaces</code>、<code>Microsoft.Bcl.TimeProvider</code>、<code>Microsoft.Extensions.Logging.Abstractions</code>、<code>System.IO.FileSystem.AccessControl</code>、<code>System.Security.AccessControl</code>、<code>System.Security.Principal.Windows</code> 同步解除 Framework 時代的版本鎖定；保留 AD 時核對 Windows 相依。</li>
-      <li><strong>HQ 前端</strong>　Bootstrap 3.3.7 已停止維護。jQuery 清單列 3.3.1，主要頁面實檔為 1.9.1；首頁與舊後台各一處使用 jQuery 3 已移除的 <code>.load(handler)</code>。更新 jQuery 須同步改綁 load 事件，核對電話查詢、輪播與側選單。UEditor 1.4.3 部分對話框另載 jQuery 1.10.2。<a href="https://api.jquery.com/load-shorthand/">jQuery 事件變更</a> · <a href="https://getbootstrap.com/docs/3.4/">Bootstrap 3 維護狀態</a></li>
+      <li><strong>HQ 前端</strong>　Bootstrap 3.3.7 已停止維護。jQuery 清單列 3.3.1，主要頁面仍載入 1.9.1。首頁與舊後台已改用 jQuery 1.x 與 3.x 均支援的 <code>.on('load', …)</code> 綁定方式。升級套件時仍須核對電話查詢、輪播與側選單。UEditor 1.4.3 部分對話框另載 jQuery 1.10.2。<a href="https://api.jquery.com/load-shorthand/">jQuery 事件變更</a> · <a href="https://getbootstrap.com/docs/3.4/">Bootstrap 3 維護狀態</a></li>
       <li><strong>新後台前端</strong>　實檔為 jQuery 3.4.1、Bootstrap 5.3.3，Bootstrap 套件清單卻列 3.4.1。兩站的 jQuery 更新另需納入 3.5.0 起的安全修補。Modernizr 2.8.3、jQuery.Validation 1.17.0 及 Microsoft.jQuery.Unobtrusive.Validation 3.2.11 可與 .NET 分開處理，按實際頁面載入情形保留。<a href="https://blog.jquery.com/2020/04/10/jquery-3-5-0-released/">jQuery 安全修補</a></li>
       <li><strong>編輯器與外部資源</strong>　新後台編輯頁使用 CDN 的 CKEditor 4.22.1，版面另載入 jquery-ajax-unobtrusive 3.2.6 與 Font Awesome 6.4.0。CKEditor 4 開源版已停止維護；續用支援版或換版時，核對授權、內網載入、舊文章格式、貼圖及儲存。<a href="https://ckeditor.com/ckeditor-4/">原廠支援與授權</a></li>
     </ul>
@@ -67,7 +76,7 @@
       <li><strong>外部公文</strong>　下載保留 20 秒逾時，核對可信來源、TLS 與重導後來源。PDF 的 <code>original_html</code> 實為全文文字，附件優先取 URI 連結註解，無結果才從文字補抓符合 PDF 副檔名的網址；用重導後網址解析相對路徑，核對繁中文件、檔名、去重及順序。</li>
       <li><strong>電子報</strong>　分店公文合併新舊來源，少一個來源仍可能回 HTTP 200；<code>TestingMode</code> 缺值預設為真，須分別核對兩種來源的正式連結。</li>
       <li><strong>快取</strong>　HQ 有 5 組快取，部門活動保留 3 小時，其餘 12 小時。可用 <code>System.Runtime.Caching</code> 相容套件沿用，或改用 <code>IMemoryCache</code>。兩者均為單機記憶體；部署多個站台執行個體時，手動清除須涵蓋所有執行個體。<a href="https://learn.microsoft.com/en-us/dotnet/core/extensions/caching">Microsoft 快取選項</a></li>
-      <li><strong>頁面與舊網址</strong>　HQ 有 20 個網站 Razor 檔、19 個 API 說明頁 Razor 檔。替換 <code>Scripts.Render</code>、<code>Styles.Render</code>，保留腳本順序、站根資源、附件及外部 .aspx 網址。若 IIS 改掛虛擬路徑，須逐一檢查從站根起算的 API 與圖片連結。傳真及餐廳有 CP950 靜態 HTML，對應 Razor 檔為 UTF-8 且宣告 Big5，須分別驗中文顯示。</li>
+      <li><strong>頁面與舊網址</strong>　HQ 有 20 個網站 Razor 檔、19 個 API 說明頁 Razor 檔。替換 <code>Scripts.Render</code>、<code>Styles.Render</code>，保留腳本順序、站根資源、附件及外部 .aspx 網址。若 IIS 改掛虛擬路徑，須逐一檢查從站根起算的 API 與圖片連結。傳真表的 Big5 內嵌分頁仍使用相對網址，須隨主表保留。</li>
     </ul>
   </section>
 
@@ -82,7 +91,7 @@
       <li><strong>內容、公告與 ICS</strong>　核對選單、部門內容與跑馬燈修改後的前台讀回。ICS 新增／修改畫面傳 JSON，其中 <code>icsSecurityData</code>、<code>icsIsoData</code> 是 JSON 字串；伺服器另接受表單，附件獨立走 multipart。應依內容類型取值，避免對 JSON 讀取 <code>Request.Form</code>。<a href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.http.httprequest.form?view=aspnetcore-10.0">Microsoft 表單讀取規則</a></li>
       <li><strong>ICS 資料一致性</strong>　主檔 <code>news</code> 與明細 <code>ics_list</code> 分次寫入，未共用交易；編輯另讀 <code>ics_upload</code>。核對類別切換、明細更新與軟刪除、附件舊連結及中途失敗後的回復，並比對 HQ 前台清單。</li>
       <li><strong>附件與大小上限</strong>　一般上傳的程式上限為 50 MiB，Word 僅收 .docx、上限 20 MiB。以 <code>IFormFile</code> 與明確儲存目錄取代 <code>Request.Files</code>、<code>Server.MapPath</code>。IIS、應用主機與表單上限須容納 multipart 開銷；以接近上限的檔案驗證。一般附件保留原副檔名，須限制允許類型，確認上傳目錄無執行權，且代理後的下載網址正確。<a href="https://learn.microsoft.com/en-us/aspnet/core/mvc/models/file-uploads?view=aspnetcore-10.0">Microsoft 上傳限制</a></li>
-      <li><strong>Word 預覽</strong>　轉換器採內建 ZIP/XML，可保留。原始 Word 須維持私有，產出 HTML 由授權預覽端點讀取；保留圖片網址、表格合併與 PDF 連結改寫，非法檔名或缺檔回 404。切換網域時一併核對編輯器內的兩站網址。</li>
+      <li><strong>Word 預覽</strong>　轉換器已可在 .NET 10 執行。上傳與預覽仍由既有後台處理。原始 Word 須維持私有，產出 HTML 由授權預覽端點讀取；保留圖片網址、表格合併與 PDF 連結改寫，非法檔名或缺檔回 404。切換網域時一併核對編輯器內的兩站網址。</li>
     </ul>
   </section>
 
@@ -93,7 +102,7 @@
       <li><strong>建置與 IIS</strong>　兩站改用 Web SDK、PackageReference 與相容的 .NET SDK，移除舊組件繫結重新導向與重複的專案檔案宣告。使用 Visual Studio 建置 <code>net10.0</code> 時，官方支援 18.0 起。逐台核對 Windows Server 支援狀態。IIS 需 ASP.NET Core Module；框架相依部署還需 .NET 10 與 ASP.NET Core 共用執行階段，自含式部署自帶執行階段。採 in-process 時兩站各用獨立應用程式集區，位元架構須相符。<a href="https://learn.microsoft.com/en-us/dotnet/core/porting/versioning-sdk-msbuild-vs">建置版本</a> · <a href="https://github.com/dotnet/core/blob/main/release-notes/10.0/supported-os.md">作業系統</a> · <a href="https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/hosting-bundle?view=aspnetcore-10.0">IIS 模組</a> · <a href="https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/in-process-hosting?view=aspnetcore-10.0">集區條件</a></li>
       <li><strong>靜態檔與正式設定</strong>　建置時已知的 CSS、腳本與圖片可用 <code>MapStaticAssets</code>；上線後新增的公開附件須另設靜態檔服務或下載端點，保留原網址。確認 <code>/images</code> 目錄瀏覽範圍、代理後的 HTTPS 與主機名稱、繁中日期、錯誤頁及日誌寫入／輪替。正式錯誤回應應隱藏例外堆疊；操作與資料庫日誌須遮蔽敏感查詢值與 SQL 參數。<a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/static-files?view=aspnetcore-10.0">Microsoft 靜態檔規則</a></li>
       <li><strong>歷史附件｜高風險</strong>　HQ 的資料夾發布設定會清除目的目錄；宣告內容有 74 筆缺少對應檔案（images 39、userfiles 32、UEditor 3）。切換前須與正式站比對並備份，將上傳與 Word 成品放在發布目錄之外。重新發布及回復後，各以舊文章附件、剛上傳的檔案與授權 Word 預覽核對。</li>
-      <li><strong>回歸測試</strong>　現有 34 個測試限於後台內容、ICS 與 Word。將 MVC 5、Razor、WebPages DLL 及 <code>HttpContextBase</code> 模擬改接新後台。現用 Microsoft.NET.Test.Sdk 17.11.1 與 MSTest.TestAdapter／TestFramework 3.5.2；後兩者已標記停止維護，應選可在目標環境探索並執行測試的版本。另補兩站登入與拒絕、前台 API、真實 SQL、上傳及 IIS 發布後回歸。<a href="https://www.nuget.org/packages/MSTest.TestAdapter/3.5.2">MSTest 套件狀態</a></li>
+      <li><strong>回歸測試</strong>　原後台測試涵蓋內容、ICS 與 Word。後續移植管理功能時，須將 MVC 5、Razor、WebPages DLL 與 <code>HttpContextBase</code> 模擬改接新後台。舊測試使用 Microsoft.NET.Test.Sdk 17.11.1 與 MSTest 3.5.2，.NET 10 的 Word 測試已另用相容版本。兩站登入與拒絕、前台 API、實際 SQL、上傳及 IIS 發布仍須回歸。<a href="https://www.nuget.org/packages/MSTest.TestAdapter/3.5.2">舊測試套件狀態</a></li>
     </ul>
   </section>
 </main>

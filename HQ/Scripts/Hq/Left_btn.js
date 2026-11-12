@@ -23,8 +23,9 @@ var createUl = function (oLayout) {
         'cellspacing': "0"
 
     }).appendTo($divDepartment);
+    var $rows = $('<tbody>').appendTo($table_lbtn);
     // 判斷是否為部門還是分店(圖片、class不同)
-    $table_lbtn.append($('<tr>').append($('<img>', {
+    $rows.append($('<tr>').append($('<img>', {
         'height': "45",
         'class': oLayout === oDepartment ? 'td_lbtn_title' : 'tb_lbtn_store',
         'src': oLayout === oDepartment ? '/images/pink/d_left/u_title.gif' : '/images/pink/d_left/u_title_store.gif',
@@ -34,7 +35,7 @@ var createUl = function (oLayout) {
     })))
     // 建立其中各值的按鈕
     Object.keys(oLayout).forEach(function (val) {
-        $table_lbtn.append($('<tr>').append($('<td>', {
+        $rows.append($('<tr>').append($('<td>', {
             'height': "38",
             'id': val,
             'class': 'td_lbtn_vl_line',
@@ -44,7 +45,7 @@ var createUl = function (oLayout) {
         })))
     })
     // 在最底下增加標底
-    $table_lbtn.append('<tr> <td height="12" class="td_lbtn_u_h" background="/images/pink/d_left1/u_h.gif"></td></tr >')
+    $rows.append('<tr> <td height="12" class="td_lbtn_u_h" background="/images/pink/d_left1/u_h.gif"></td></tr >')
 };
 
 // 滑鼠移動在按鈕上的切換顏色

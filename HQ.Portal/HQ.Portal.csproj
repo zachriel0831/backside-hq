@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="../HQ/Views/Home/FaxView.cshtml;../HQ/Views/Home/Restaurant.cshtml"
+             Link="Views/Home/%(Filename)%(Extension)" CopyToPublishDirectory="Never" />
+    <None Include="../HQ/Areas/tel/fax.htm;../HQ/Areas/tel/restaurant.htm"
+          Link="DirectoryFiles/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <None Include="../HQ/Areas/tel/fax.files/sheet001.htm;../HQ/Areas/tel/fax.files/tabstrip.htm;../HQ/Areas/tel/fax.files/stylesheet.css;../HQ/Areas/tel/fax.files/filelist.xml"
+          Link="DirectoryFiles/fax.files/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
